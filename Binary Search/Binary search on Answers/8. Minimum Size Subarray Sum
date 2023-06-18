@@ -1,0 +1,33 @@
+class Solution {
+    bool fun(vector<int> &nums,int mid,int target){
+        int maxSum = 0, sum = 0;
+        int i = 0;
+        int j = 0;
+        while(j < nums.size()){
+            sum += nums[j];
+            if(j-i+1 < mid)
+                j++;
+            else{
+                maxSum = max(maxSum,sum);
+                sum -= nums[i];
+                i++;
+                j++;
+            }
+        }
+        return maxSum >= target ? true: false;
+    }
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int ans = 0;
+        int low = 1, high = nums.size();
+        while(low <= high){
+            int mid = low + (high-low)/2;
+            if(fun(nums,mid,target)){
+                ans = mid;
+                high = mid-1;
+            }
+            else low = mid+1;
+        }
+        return ans;
+    }
+};
