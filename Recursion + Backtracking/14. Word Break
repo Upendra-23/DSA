@@ -1,0 +1,20 @@
+class Solution {
+    bool solve(int ind,string &str,unordered_set<string> &s,vector<int> &dp){
+        if(ind == str.size()) return true;
+        if(dp[ind] != -1) return dp[ind];
+        for(int i=ind;i<str.size();i++){
+            string temp = str.substr(ind,i-ind+1);
+            if(s.find(temp) != s.end()){
+                if(solve(i+1,str,s,dp))
+                    return true;
+            }
+        }
+        return dp[ind] = false;
+    }
+public:
+    bool wordBreak(string str, vector<string>& wordDict) {
+        unordered_set<string> s(wordDict.begin(),wordDict.end());
+        vector<int> dp(str.size(),-1);
+        return solve(0,str,s,dp);
+    }
+};
