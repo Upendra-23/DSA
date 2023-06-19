@@ -1,0 +1,39 @@
+class Solution{
+    
+    bool isvalid(int nrow,int ncol,int n){
+        return nrow >= 0 && nrow < n && ncol >= 0 && ncol < n;
+    }
+    
+    void dfs(int row,int col,int n,string &ds,vector<vector<int>> &vis,vector<string> &ans,vector<vector<int>> &grid){
+        if(row == n-1 && col == n-1){
+            ans.push_back(ds);
+            return;
+        }
+        int dr[] = {1,0,-1,0};
+        int dc[] = {0,1,0,-1};
+        string str = "DRUL";
+        for(int i=0;i<4;i++){
+            int nrow = row + dr[i];
+            int ncol = col + dc[i];
+            if(isvalid(nrow,ncol,n) && !vis[nrow][ncol] && grid[nrow][ncol] == 1){
+                vis[nrow][ncol] = true;
+                ds.push_back(str[i]);
+                dfs(nrow,ncol,n,ds,vis,ans,grid);
+                ds.pop_back();
+                vis[nrow][ncol] = false;
+            }
+        }
+    }
+    
+    public:
+    vector<string> findPath(vector<vector<int>> &grid, int n) {
+        // Your code goes here
+        vector<string> ans;
+        if(grid[0][0] == 0 || grid[n-1][n-1] == 0) return ans;
+        vector<vector<int>> vis(n,vector<int> (n,0));
+        vis[0][0] = true;
+        string path = "";
+        dfs(0,0,n,path,vis,ans,grid);
+        return ans;
+    }
+};
