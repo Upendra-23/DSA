@@ -1,0 +1,22 @@
+class Solution{
+    void solve(int ind,int prev,int n,vector<int> &arr){
+        if(ind == n){
+            for(auto it:arr)
+                cout << it;
+            cout << " ";
+            return;
+        }
+        arr[ind] = 0;
+        solve(ind+1,0,n,arr);
+        if(prev != 1){
+            arr[ind] = 1;
+            solve(ind+1,1,n,arr);
+        }
+    }
+public:
+    void generateBinaryStrings(int num){
+        //Write your code
+        vector<int> arr(num,0);
+        solve(0,-1,num,arr);
+    }
+};
