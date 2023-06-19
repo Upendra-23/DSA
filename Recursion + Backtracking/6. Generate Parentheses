@@ -1,0 +1,16 @@
+class Solution {
+    void solve(int ob,int cb,int n,string str,vector<string> &ans){
+        if(str.size() == 2*n){
+            ans.push_back(str);
+            return;
+        }
+        if(ob < n) solve(ob+1,cb,n,str+'(',ans);
+        if(cb < ob) solve(ob,cb+1,n,str+')',ans);
+    }
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        solve(0,0,n,"",ans);
+        return ans;
+    }
+};
