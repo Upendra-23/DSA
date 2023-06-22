@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+
+struct Node {
+    Node* links[26];
+    int pfcnt = 0;
+    bool flag;
+
+    bool contains(char ch){
+        return links[ch-'a'] != NULL;
+    }
+
+    void put(char ch){
+        links[ch-'a'] = new Node();
+    }
+
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+};
+
+class Trie {
+    Node* root;
+public:
+    Trie(){
+        root = new Node();
+    }
+
+    void insert(string &word){
+        Node* node = root;
+        for(int i=0;i<word.size();i++){
+            if(!node->contains(word[i]))
+                node->put(word[i]);
+            node = node->get(word[i]);
+            node->pfcnt++;
+        }
+        node->flag = true;
+    }
+
+    string getlcp(string &word,int n){
+        Node* node = root;
+        int i = 0;
+        for(i=0;i<word.size();i++){
+            node = node->get(word[i]);
+            if(node->pfcnt != n)
+                break;
+        }
+        return word.substr(0,i);
+    }
+};
+
+string longestCommonPrefix(vector<string> &arr, int n)
+{
+    Trie obj;
+    for (auto it : arr)
+      obj.insert(it);
+    return obj.getlcp(arr[0],n);
+    
+}
