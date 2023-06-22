@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+struct Node{
+    Node* link[2];
+    bool contains(int bit){
+        return link[bit] != NULL;
+    }
+    void put(int bit,Node* node){
+        link[bit] = node;
+    }
+    Node* get(int bit){
+        return link[bit];
+    }
+};
+class Trie{
+    Node* root;
+public:
+    Trie(){
+        root = new Node();
+    }
+    void insert(int num){
+        Node* node = root;
+        for(int i=31;i>=0;i--){
+            int bit = (num >> i) & 1;
+            if(!node->contains(bit))
+                node->put(bit,new Node());
+            node = node->get(bit);
+        }
+    }
+    int getmax(int num){
+        int maxNum = 0;
+        Node* node = root;
+        for(int i=31;i>=0;i--){
+            int bit = (num >> i) & 1;
+            if(node->contains(1-bit)){
+                maxNum = maxNum | (1 << i);
+                node = node->get(1-bit);
+            }
+            else
+                node = node->get(bit);
+        }
+        return maxNum;
+    }
+};
+vector<int> maxXorQueries(vector<int> &arr, vector<vector<int>> &queries){
+	//	Write your coode here.
+    sort(arr.begin(),arr.end());
+    vector<pair<int,pair<int,int>>> oq;
+    int q = queries.size();
+    int n = arr.size();
+    for(int i=0;i<q;i++){
+        oq.push_back({queries[i][1],{queries[i][0],i}});
+    }
+    sort(oq.begin(),oq.end());
+    Trie obj;
+    int ind = 0;
+    vector<int> ans(q);
+    for(int i=0;i<q;i++){
+        int ai = oq[i].first;
+        int xi = oq[i].second.first;
+        int qind = oq[i].second.second;
+        while(ind < n && arr[ind] <= ai){
+            obj.insert(arr[ind]);
+            ind++;
+        }
+        if(ind == 0) ans[qind] = -1;
+        else ans[qind] = obj.getmax(xi);
+    }
+    return ans;
+}
