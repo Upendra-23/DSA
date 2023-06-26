@@ -1,0 +1,29 @@
+class Solution{
+    public:
+    vector<long long int> twoOddNum(long long int arr[], long long int n)  
+    {
+        // code here
+        long long x = 0;
+        for(long long i = 0;i<n;i++)
+            x ^= arr[i];
+            
+        long long cnt = 0;
+        while(x){
+            if(x & 1)
+                break;
+            cnt++;
+            x = x>>1;
+        }
+        
+        long long x1 = 0, x2 = 0;
+        for(long long i = 0;i<n;i++){
+            if(arr[i] & (1 << cnt))
+                x1 ^= arr[i];
+            else
+                x2 ^= arr[i];
+        }
+        
+        if(x1 > x2) return {x1,x2};
+        return {x2,x1};
+    }
+};
