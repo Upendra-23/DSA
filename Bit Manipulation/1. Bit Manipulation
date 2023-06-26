@@ -1,0 +1,13 @@
+class Solution {
+  public:
+    void bitManipulation(int num, int i) {
+        // your code here
+        long val = num;
+        i = i-1;
+        (val & (1 << i)) ? cout << "1 " : cout << "0 ";
+        val = val | (1 << i);
+        cout << val << " ";
+        val = val & (~(1 << i));
+        cout << val;
+    }
+};
