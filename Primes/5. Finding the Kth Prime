@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int N = 1e8;
+vector<bool> isprime(N + 1, true);
+vector<int> ds;
+void createseive() {
+	isprime[0] = isprime[1] = false;
+	for (int i = 2; i * i <= N; i++) {
+		if (isprime[i] == true) {
+			for (int j = i * i; j <= N; j += i)
+				isprime[j] = false;
+		}
+	}
+
+	for (int i = 2; i <= N; i++) {
+		if (isprime[i] == true)
+			ds.push_back(i);
+	}
+}
+
+int main() {
+	createseive();
+	int t;
+	cin >> t;
+	while (t--) {
+		int k;
+		cin >> k;
+		cout << ds[k - 1] << endl;
+	}
+}
