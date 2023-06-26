@@ -1,0 +1,18 @@
+class Solution{
+	public:
+	vector<int>AllPrimeFactors(int n) {
+	    // Code here
+	    set<int> s;
+	    for(int i=2;i*i <= n;i++){
+	        while(n % i == 0){
+	            s.insert(i);
+	            n = n/i;
+	        }
+	    }
+	    if(n > 1) s.insert(n);
+	    vector<int> ans;
+	    for(auto it:s)
+	        ans.push_back(it);
+	    return ans;    
+	}
+};
