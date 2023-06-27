@@ -1,0 +1,22 @@
+class Solution {
+  public:
+    int countOfSubstrings(string s, int k) {
+        // code here
+        vector<int> mp(128,0);
+        int cnt = 0, ans = 0;
+        int i = 0, j = 0;
+        while(j < s.size()){
+            if(mp[s[j]] == 0) cnt++;
+            mp[s[j]]++;
+            if(j-i+1 < k) j++;
+            else{
+                if(cnt == k) ans++;
+                mp[s[i]]--;
+                if(mp[s[i]] == 0) cnt--;
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+};
