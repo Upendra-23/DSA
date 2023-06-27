@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        vector<int> mp(128,0);
+        int maxLen = 0, maxf = 0;
+        int i = 0, j = 0;
+        while(j < s.size()){
+            mp[s[j]]++;
+            maxf = max(maxf,mp[s[j]]);
+            while((j-i+1)-maxf > k){
+                mp[s[i]]--;
+                i++;
+            }
+            maxLen = max(maxLen,j-i+1);
+            j++;
+        }
+        return maxLen;
+    }
+};
