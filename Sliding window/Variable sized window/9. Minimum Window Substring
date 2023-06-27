@@ -1,0 +1,28 @@
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        vector<int> mp(128,0);
+        for(auto it:t) mp[it]++;
+        int cnt = t.size();
+        int minLen = 1e9;
+        int si = -1, ei = -1;
+        int i = 0, j = 0;
+        while(j < s.size()){
+            if(mp[s[j]] > 0) cnt--;
+            mp[s[j]]--;
+            while(cnt == 0){
+                if(minLen > j-i+1){
+                    minLen = j-i+1;
+                    si = i;
+                    ei = j;
+                }
+                mp[s[i]]++;
+                if(mp[s[i]] > 0) cnt++;
+                i++;
+            }
+            j++;
+        }
+        if(si == -1) return "";
+        return s.substr(si,minLen);
+    }
+};
