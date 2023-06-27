@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> ans;
+        vector<int> mp(128,0);
+        for(auto it:p) mp[it]++;
+        int cnt = p.size();
+        int i = 0, j = 0;
+        while(j < s.size()){
+            if(mp[s[j]] > 0) cnt--;
+            mp[s[j]]--;
+            if(j-i+1 < p.size()) j++;
+            else{
+                if(cnt == 0) ans.push_back(i);
+                mp[s[i]]++;
+                if(mp[s[i]] > 0) cnt++;
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+};
