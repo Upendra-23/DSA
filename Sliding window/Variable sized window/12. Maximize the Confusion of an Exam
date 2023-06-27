@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int maxConsecutiveAnswers(string answerKey, int k) {
+        int cntF = 0, cntT = 0;
+        int maxLen = 0, maxf = 0;
+        int i = 0, j = 0;
+        while(j < answerKey.size()){
+            if(answerKey[j] == 'T') cntT++;
+            else cntF++;
+            maxf = max(maxf,max(cntT,cntF));
+            while((j-i+1) - maxf > k){
+                if(answerKey[i] == 'T') cntT--;
+                else cntF--;
+                i++;
+            }
+            maxLen = max(maxLen,j-i+1);
+            j++;
+        }
+        return maxLen;
+    }
+};
