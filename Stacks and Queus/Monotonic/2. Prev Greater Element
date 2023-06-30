@@ -1,0 +1,13 @@
+vector<int> prevGreaterEl(vector<int> &arr) {
+	int n = arr.size();
+	vector<int> pge(n);
+	stack<int> s;
+	for (int i = 0; i < n; i++) {
+		while (!s.empty() && arr[i] >= s.top())
+			s.pop();
+		if (s.empty()) pge[i] = -1;
+		else pge[i] = s.top();
+		s.push(arr[i]);
+	}
+	return pge;
+}
