@@ -1,0 +1,43 @@
+// Two pointer
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        sort(nums.begin(),nums.end());
+        int low = 0, high = 1;
+        int cnt = 0;
+        while(low < nums.size() && high < nums.size()){
+            if(low == high){
+                high++;
+                continue;
+            }
+            int diff = nums[high]-nums[low];
+            if(diff == k){
+                cnt++;
+                low++;
+                high++;
+                while(high < nums.size() && nums[high] == nums[high-1])
+                    high++;
+                
+            }
+            else if(diff < k) high++;
+            else low++;
+        }
+        return cnt;
+    }
+};
+
+
+// Hashing
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        unordered_map<int,int> mp;
+        for(auto it:nums) mp[it]++;
+        int cnt = 0;
+        for(auto it:mp){
+            if((!k && it.second > 1) || (k && mp.count(it.first+k)))
+                cnt++;
+        }
+        return cnt;
+    }
+};
