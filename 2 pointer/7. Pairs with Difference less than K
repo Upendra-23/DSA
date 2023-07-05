@@ -1,0 +1,19 @@
+class Solution{
+    public:
+        int countPairs(int arr[], int n, int k)
+    {
+    	int cnt = 0;
+    	sort(arr,arr+n);
+    	int i = 0, j = 1;
+    	while(j < n){
+    	    int diff = abs(arr[i]-arr[j]);
+    	    if(diff >= k) i++;
+    	    else{
+    	        cnt += (j-i);
+    	        j++;
+    	    }
+    	}
+    	return cnt;
+    	
+    }
+};
