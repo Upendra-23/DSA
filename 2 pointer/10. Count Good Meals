@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int mod = (int)(1e9+7);
+    int countPairs(vector<int>& deliciousness) {
+        int cnt = 0;
+        unordered_map<int,int> mp;
+        for(auto x:deliciousness){
+            for(int i=0;i<=21;i++){
+                cnt = (cnt + mp[(1<<i)-x])%mod;
+            }
+            mp[x]++;
+        }
+        return cnt;
+    }
+};
