@@ -1,0 +1,21 @@
+int Solution::solve(vector<int> &A, int B) {
+    int cnt = 0;
+    int i = 0;
+    int n = A.size();
+    while(i < n){
+        int left = max(0,i-B+1);
+        int right = min(i+B-1,n-1);
+        bool isLighted = false;
+        while(right >= left){
+            if(A[right] == 1){
+                isLighted = true;
+                cnt++;
+                break;
+            }
+            right--;
+        }
+        if(!isLighted) return -1;
+        i = right + B;
+    }
+    return cnt;
+}
