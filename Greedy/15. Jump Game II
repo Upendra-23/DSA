@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int jumpsCnt = 0;
+        int maxCanReach = 0;
+        int curr = 0;
+        for(int i=0;i<nums.size()-1;i++){
+            maxCanReach = max(maxCanReach,nums[i]+i);
+            if(i == curr){
+               curr = maxCanReach;
+               jumpsCnt++;
+            }
+        }
+        return jumpsCnt;
+    }
+};
