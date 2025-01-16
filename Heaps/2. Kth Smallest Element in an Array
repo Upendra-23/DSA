@@ -1,0 +1,10 @@
+class Solution {
+  public:
+    int kthSmallest(vector<int> &arr, int k) {
+        priority_queue<int,vector<int>,greater<int>> pq;
+        for(auto it:arr) pq.push(it);
+        k--;
+        while(k--) pq.pop();
+        return pq.top();
+    }
+};
