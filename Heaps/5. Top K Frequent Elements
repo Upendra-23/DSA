@@ -18,3 +18,34 @@ public:
         return ans;
     }
 };
+
+
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int,int> mp;
+        for(auto it:nums) mp[it]++;
+
+        int n = nums.size();
+        vector<vector<int>> buckets(n+1);
+        // buckets[i] -> element occuring i times
+
+        for(auto it:mp){
+            int freq = it.second;
+            int val = it.first;
+            buckets[freq].push_back(val);
+        }
+
+        vector<int> ans;
+        for(int i=n;i>=0;i--){
+            for(auto it:buckets[i]){
+                ans.push_back(it);
+                k--;
+                if(k == 0) return ans;
+            }
+        }
+        return ans;
+        
+    }
+};
