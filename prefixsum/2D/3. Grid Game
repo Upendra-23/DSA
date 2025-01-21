@@ -1,0 +1,24 @@
+class Solution {
+public:
+    long long gridGame(vector<vector<int>>& grid) {
+
+        long long firstRowRemSum = accumulate(grid[0].begin(),grid[0].end(),0LL);
+        long long secondRowSum = 0LL;
+
+        long long minRobo2Sum = LONG_LONG_MAX;
+
+        for(int robo1Col = 0;robo1Col < grid[0].size();robo1Col++){
+
+            firstRowRemSum -= grid[0][robo1Col];
+
+            long long robo2BestSum = max(firstRowRemSum, secondRowSum);
+
+            minRobo2Sum = min(minRobo2Sum, robo2BestSum);
+
+            secondRowSum += grid[1][robo1Col];
+
+        }
+        return minRobo2Sum;
+
+    }
+};
