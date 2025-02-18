@@ -1,0 +1,21 @@
+// problem Link: https://www.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1
+
+class Solution {
+    void dfs(int node, vector<int> &ans, vector<int> &vis, vector<vector<int>> &adj){
+        vis[node] = true;
+        ans.push_back(node);
+        for(auto it:adj[node]){
+            if(!vis[it]){
+                dfs(it, ans, vis, adj);
+            }
+        }
+    }
+  public:
+    vector<int> dfsOfGraph(vector<vector<int>>& adj) {
+        vector<int> ans;
+        int n = adj.size();
+        vector<int> vis(n,0);
+        dfs(0, ans, vis, adj);
+        return ans;
+    }
+};
