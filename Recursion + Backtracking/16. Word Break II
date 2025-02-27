@@ -1,0 +1,22 @@
+class Solution {
+    void fun(int ind,string s,string ds,unordered_set<string> &st,vector<string> &ans){
+        if(ind == s.size()){
+            ans.push_back(ds);
+            return;
+        }
+        for(int i=ind;i<s.size();i++){
+            string substr = s.substr(ind,i-ind+1);
+            if(st.find(substr) != st.end()){
+                if(ds.size()) fun(i+1,s,ds+" "+substr,st,ans);
+                else fun(i+1,s,substr,st,ans);
+            }
+        }
+    }
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> st(wordDict.begin(),wordDict.end());
+        vector<string> ans;
+        fun(0,s,"",st,ans);
+        return ans;
+    }
+};
