@@ -1,0 +1,42 @@
+class Solution {
+    bool isvalid(int row,int col,int n,int m){
+        return row >= 0 && row < n && col >= 0 && col < m;
+    }
+public:
+    int nearestExit(vector<vector<char>>& maze, vector<int>& entrance) {
+        int n = maze.size(), m = maze[0].size();
+        vector<vector<int>> vis(n,vector<int> (m,0));
+        queue<pair<int,int>> q;
+        q.push({entrance[0],entrance[1]});
+        vis[entrance[0]][entrance[1]] = true;
+
+        int dr[] = {-1,0,0,1};
+        int dc[] = {0,-1,1,0};
+
+        int d = -1;
+        while(!q.empty()){
+            int size = q.size();
+            d++;
+            while(size--){
+                int row = q.front().first;
+                int col = q.front().second;
+                q.pop();
+
+                if(col == 0 || row == 0 || row == n-1 || col == m-1){
+                    if(row != entrance[0] || col != entrance[1])
+                        return d;
+                }
+
+                for(int i=0;i<4;i++){
+                    int nrow = row + dr[i];
+                    int ncol = col + dc[i];
+                    if(isvalid(nrow,ncol,n,m) && maze[nrow][ncol] == '.' && !vis[nrow][ncol]){
+                        vis[nrow][ncol] = true;
+                        q.push({nrow,ncol});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
