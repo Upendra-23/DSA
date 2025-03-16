@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int edgeScore(vector<int>& edges) {
+        int n = edges.size();
+        vector<long long> indegreeSum(n,0);
+        for(int i=0;i<n;i++){
+            long long u = i;
+            long long v = edges[i];
+            indegreeSum[v] += u;
+        }
+
+        long long ans = n, sum = 0;
+        for(int i=0;i<n;i++){
+            if(sum < indegreeSum[i]){
+                ans = i;
+                sum = indegreeSum[i];
+            }
+        }
+        return ans;
+    }
+};
