@@ -1,0 +1,49 @@
+class Solution {
+    void bfs(string src,string dst,unordered_map<string,vector<pair<string, double>>> &adj,
+    vector<double> &ans){
+        unordered_map<string,bool> vis;
+        queue<pair<string, double>> q;
+        q.push({src, 1.0});
+        vis[src] = true;
+
+        while(!q.empty()){
+            auto [node, pro] = q.front();
+            q.pop();
+
+            if(node == dst){
+                ans.push_back(pro);
+                return;
+            }
+
+            for(auto [adjnode, value]: adj[node]){
+                if(!vis[adjnode]){
+                    vis[adjnode] = true;
+                    q.push({adjnode,pro * value});
+                }
+            }
+        }
+        ans.push_back(-1.0);
+    }
+public:
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        int n = equations.size();
+        unordered_map<string,vector<pair<string, double>>> adj;
+        
+        for(int i=0;i<n;i++){
+            vector<string> equation = equations[i];
+            adj[equation[0]].push_back({equation[1],values[i]});
+            adj[equation[1]].push_back({equation[0],1/values[i]});
+        }
+
+        vector<double> ans;
+        for(auto &query:queries){
+            string a = query[0], b = query[1];
+            if((adj.find(a) == adj.end()) || (adj.find(b) == adj.end())){
+                ans.push_back(-1.0);
+                continue;
+            }
+            bfs(a,b,adj,ans);
+        }
+        return ans;
+    }
+};
