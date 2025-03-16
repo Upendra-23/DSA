@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
+        vector<int> indegree(n,0);
+        unordered_map<int,unordered_set<int>> mp;
+        for(auto it:roads){
+            indegree[it[1]]++;
+            indegree[it[0]]++;
+            mp[it[0]].insert(it[1]);
+            mp[it[1]].insert(it[0]);
+        }
+
+        int ans = 0;
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                int val = indegree[i] + indegree[j];
+                if(mp[i].find(j) != mp[i].end()) val--;
+                ans = max(ans, val);
+            }
+        }
+        return ans;
+    }
+};
