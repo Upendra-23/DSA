@@ -1,0 +1,33 @@
+int minimumKnightMoves(int x, int y) {
+    set<pair<int,int>> vis;
+    queue<pair<int,int>> q;
+    q.push({0,0});
+    vis.insert({0,0});
+
+    int dr[] = {-2,-2,-1,-1,1,1,2,2};
+    int dc[] = {-1,1,-2,2,-2,2,-1,1};
+
+    int steps = -1;
+    while(!q.empty()){
+        int size = q.size();
+        steps++;
+        while(size--){
+            int row = q.front().first;
+            int col = q.front().second;
+            q.pop();
+
+            if(row == x && col == y)
+                return steps;
+
+            for(int i=0;i<8;i++){
+                int nrow = row + dr[i];
+                int ncol = col + dc[i];
+                if(vis.find({nrow,ncol}) == vis.end()){
+                    vis.insert({nrow,ncol});
+                    q.push({nrow,ncol});
+                }
+            }
+        }
+    }
+    return -1;
+}
