@@ -1,0 +1,40 @@
+class Solution {
+public:
+    bool isPossible(int n, vector<vector<int>>& edges) {
+        vector<int> indegree(n+1,0);
+        unordered_map<int,unordered_set<int>> mp;
+        for(auto it:edges){
+            indegree[it[0]]++;
+            indegree[it[1]]++;
+            mp[it[0]].insert(it[1]);
+            mp[it[1]].insert(it[0]);
+        }
+
+        vector<int> nodes;
+        for(int i=1;i<=n;i++){
+            if(indegree[i] & 1)
+                nodes.push_back(i);
+        }
+
+        if(nodes.size() > 4 || (nodes.size()%2 != 0)) return false;
+
+         if(nodes.size() == 0) return true;
+
+        if(nodes.size() == 2){
+            if(mp[nodes[0]].find(nodes[1]) == mp[nodes[0]].end())
+                return true;
+            for(int i=1;i<=n;i++){
+                if(mp[nodes[0]].find(i) == mp[nodes[0]].end() && mp[nodes[1]].find(i) == mp[nodes[1]].end())
+                    return true;
+            }
+            return false;
+        }
+
+        int a = nodes[0], b = nodes[1], c = nodes[2], d = nodes[3];
+
+        if(mp[a].find(b) == mp[a].end() && mp[c].find(d) == mp[c].end()) return true;
+        if(mp[a].find(c) == mp[a].end() && mp[b].find(d) == mp[b].end()) return true;
+        if(mp[a].find(d) == mp[a].end() && mp[b].find(c) == mp[b].end()) return true;
+        return false;
+    }
+};
