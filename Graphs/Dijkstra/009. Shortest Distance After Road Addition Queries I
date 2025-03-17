@@ -1,0 +1,39 @@
+class Solution {
+    int dijkstr(int src,int dst,unordered_map<int,vector<int>> &adj){
+        vector<int> dist(dst+1,1e9);
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        pq.push({0,src});
+        dist[src] = 0;
+
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            
+            int currDis = it.first;
+            int node = it.second;
+
+            for(auto adjnode:adj[node]){
+                if(currDis + 1 < dist[adjnode]){
+                    dist[adjnode] = currDis + 1;
+                    pq.push({dist[adjnode], adjnode});
+                }
+            }
+        }
+        return dist[dst];
+    }
+public:
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        unordered_map<int,vector<int>> adj;
+        for(int i=0;i<n-1;i++)
+            adj[i].push_back(i+1);
+
+        vector<int> ans;
+        for(auto it:queries){
+            int u = it[0];
+            int v = it[1];
+            adj[u].push_back(v);
+            ans.push_back(dijkstr(0,n-1,adj));
+        }
+        return ans;
+    }
+};
