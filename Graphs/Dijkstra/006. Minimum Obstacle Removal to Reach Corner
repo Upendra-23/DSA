@@ -1,0 +1,38 @@
+class Solution {
+    bool isvalid(int row,int col,int n,int m){
+        return row >= 0 && row < n && col >= 0 && col < m;
+    }
+public:
+    int minimumObstacles(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        vector<vector<int>> dist(n,vector<int> (m,1e9));
+        priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,
+        greater<pair<int,pair<int,int>>>> pq;
+        pq.push({0,{0,0}});
+        dist[0][0] = 0;
+
+        int dr[] = {-1,0,0,1};
+        int dc[] = {0,-1,1,0};
+
+        while(!pq.empty()){
+            int obsRemSoFar = pq.top().first;
+            int row = pq.top().second.first;
+            int col = pq.top().second.second;
+            pq.pop();
+
+            for(int i=0;i<4;i++){
+                int nrow = row + dr[i];
+                int ncol = col + dc[i];
+                if(isvalid(nrow,ncol,n,m)){
+                    if(obsRemSoFar + grid[nrow][ncol] < dist[nrow][ncol]){
+                        dist[nrow][ncol] = obsRemSoFar + grid[nrow][ncol];
+                        pq.push({dist[nrow][ncol], {nrow,ncol}});
+                    }
+                }
+            }
+        }
+        return dist[n-1][m-1];
+    }
+};
