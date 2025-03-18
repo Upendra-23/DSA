@@ -1,0 +1,48 @@
+class Solution {
+    vector<int> dijkstra(int n, unordered_map<int,vector<pair<int,int>>> &adj){
+        vector<int> dist(n+1,INT_MAX);
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        pq.push({0,n});
+        dist[n] = 0;
+
+        while(!pq.empty()){
+            int currDis = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            for(auto [adjnode, edgewt]: adj[node]){
+                if(currDis + edgewt < dist[adjnode]){
+                    dist[adjnode] = currDis + edgewt;
+                    pq.push({dist[adjnode], adjnode});
+                }
+            }
+        }
+        return dist;
+    }
+    int mod = int(1e9+7);
+    int dfs(int node, int lastNode,  vector<int> &distanceToLastNode, unordered_map<int,vector<pair<int,int>>> &adj,
+    vector<int> &dp){
+        if(node == lastNode) return 1;
+        if(dp[node] != -1) return dp[node];
+        int ans = 0;
+        for(auto [adjnode, edgewt]:adj[node]){
+            if(distanceToLastNode[node] > distanceToLastNode[adjnode])
+                ans = (ans + dfs(adjnode, lastNode, distanceToLastNode, adj, dp))%mod;
+        }
+        return dp[node] = ans;
+    }
+public:
+    
+    int countRestrictedPaths(int n, vector<vector<int>>& edges) {
+        unordered_map<int,vector<pair<int,int>>> adj;
+        for(auto it:edges){
+            adj[it[0]].push_back({it[1],it[2]});
+            adj[it[1]].push_back({it[0],it[2]});
+        }
+
+        vector<int> distanceToLastNode = dijkstra(n,adj);
+
+        vector<int> dp(n+1,-1);
+        return dfs(1, n, distanceToLastNode, adj,dp);
+    }
+};
