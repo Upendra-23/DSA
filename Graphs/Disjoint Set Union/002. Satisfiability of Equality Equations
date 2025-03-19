@@ -1,0 +1,54 @@
+class DisjointSet {
+    public:
+    vector<int> parent, size;
+    DisjointSet(int n){
+        parent.resize(n+1,0);
+        size.resize(n+1,1);
+        for(int i=0;i<=n;i++){
+            parent[i] = i;
+        }
+    }
+    
+    int findUpar(int node){
+        if(parent[node] == node) return node;
+        return parent[node] = findUpar(parent[node]);
+    }
+    
+    void unionBySize(int u,int v){
+        int ulp_u = findUpar(u);
+        int ulp_v = findUpar(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] > size[ulp_v]){
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else{
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+class Solution {
+    static bool comp(string &a,string &b){
+        return a[1] > b[1];
+    }
+public:
+    bool equationsPossible(vector<string>& equations) {
+        DisjointSet ds(26);
+
+        sort(equations.begin(),equations.end(),comp);
+
+
+        for(auto &equation: equations){
+            cout << equation << " ";
+            int u = equation[0]-'a';
+            int v = equation[3]-'a';
+            char equality = equation[1];
+            if(equality == '=') ds.unionBySize(u,v);
+            else{
+                if(ds.findUpar(u) == ds.findUpar(v)) return false;
+            }
+        }
+        return true;
+    }
+};
