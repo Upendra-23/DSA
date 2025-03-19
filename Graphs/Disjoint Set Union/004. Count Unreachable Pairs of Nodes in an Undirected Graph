@@ -1,0 +1,56 @@
+class DisjointSet {
+    public:
+    vector<int> parent, size;
+    DisjointSet(int n){
+        parent.resize(n+1,0);
+        size.resize(n+1,1);
+        for(int i=0;i<=n;i++){
+            parent[i] = i;
+        }
+    }
+    
+    int findUpar(int node){
+        if(parent[node] == node) return node;
+        return parent[node] = findUpar(parent[node]);
+    }
+    
+    void unionBySize(int u,int v){
+        int ulp_u = findUpar(u);
+        int ulp_v = findUpar(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] > size[ulp_v]){
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else{
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+class Solution {
+public:
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        DisjointSet ds(n);
+        for(auto it:edges)
+            ds.unionBySize(it[0],it[1]);
+
+        vector<int> componentsSize;
+        for(int i=0;i<n;i++){
+            if(ds.parent[i] == i)
+                componentsSize.push_back(ds.size[i]);
+        }
+
+        sort(componentsSize.begin(),componentsSize.end());
+
+        long long ans = 0, sum = 0;
+        for(auto it:componentsSize) 
+            sum += it;
+        
+        for(int i=0;i<componentsSize.size();i++){
+            sum -= componentsSize[i];
+            ans += componentsSize[i] * sum;
+        }
+        return ans;
+    }
+};
