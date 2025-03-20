@@ -1,0 +1,64 @@
+class DisjointSet {
+    public:
+    vector<int> parent, size;
+    DisjointSet(int n){
+        parent.resize(n+1,0);
+        size.resize(n+1,1);
+        for(int i=0;i<=n;i++){
+            parent[i] = i;
+        }
+    }
+    
+    int findUpar(int node){
+        if(parent[node] == node) return node;
+        return parent[node] = findUpar(parent[node]);
+    }
+    
+    void unionBySize(int u,int v){
+        int ulp_u = findUpar(u);
+        int ulp_v = findUpar(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] > size[ulp_v]){
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else{
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+
+class Solution {
+    static bool comp(vector<int> &edge1, vector<int> &edge2){
+        return edge1[2] < edge2[2];
+    }
+    static bool compFun(vector<int> &query1,vector<int> &query2){
+        return query1[2] < query2[2];
+    }
+public:
+    vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>>& edgeList, vector<vector<int>>& queries) {
+        sort(edgeList.begin(),edgeList.end(),comp);
+        for(int i=0;i<queries.size();i++)
+            queries[i].push_back(i);
+        sort(queries.begin(),queries.end(),compFun);
+
+        vector<bool> ans(queries.size(),false);
+        DisjointSet ds(n);
+
+        int i = 0;
+        for(auto it: queries){
+            int u = it[0], v = it[1], limit = it[2], ind = it[3];
+            while(i < edgeList.size()){
+                if(edgeList[i][2] < limit){
+                    ds.unionBySize(edgeList[i][0], edgeList[i][1]);
+                }
+                else break;
+                i++;
+            }
+
+            if(ds.findUpar(u) == ds.findUpar(v)) ans[ind] = true;
+        }
+        return ans;
+    }
+};
