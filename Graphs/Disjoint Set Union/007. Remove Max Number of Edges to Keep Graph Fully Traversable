@@ -1,0 +1,66 @@
+class DisjointSet {
+    public:
+    vector<int> parent, size;
+    DisjointSet(int n){
+        parent.resize(n+1,0);
+        size.resize(n+1,1);
+        for(int i=0;i<=n;i++){
+            parent[i] = i;
+        }
+    }
+    
+    int findUpar(int node){
+        if(parent[node] == node) return node;
+        return parent[node] = findUpar(parent[node]);
+    }
+    
+    void unionBySize(int u,int v){
+        int ulp_u = findUpar(u);
+        int ulp_v = findUpar(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] > size[ulp_v]){
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else{
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+class Solution {
+    static bool comp(vector<int> &vec1,vector<int> &vec2){
+        return vec1[0] > vec2[0]; 
+    }
+public:
+    int maxNumEdgesToRemove(int n, vector<vector<int>>& edges) {
+        DisjointSet aliceDs(n), bobDs(n);
+        sort(edges.begin(),edges.end(),comp);
+
+        int extraEdges = 0;
+        for(auto it:edges){
+            int type = it[0], u = it[1], v = it[2];
+            if(type == 3){
+                if(aliceDs.findUpar(u) != aliceDs.findUpar(v)){
+                    aliceDs.unionBySize(u,v);
+                    bobDs.unionBySize(u,v);
+                }
+                else extraEdges++;
+            }
+            else if(type == 1){
+                if(aliceDs.findUpar(u) != aliceDs.findUpar(v))
+                    aliceDs.unionBySize(u,v);
+                else extraEdges++;
+            }
+            else{
+                if(bobDs.findUpar(u) != bobDs.findUpar(v))
+                    bobDs.unionBySize(u,v);
+                else extraEdges++;
+            }
+        }
+
+        if(aliceDs.size[aliceDs.findUpar(1)] != n || bobDs.size[bobDs.findUpar(1)] != n)
+            return -1;
+        return extraEdges;
+    }
+};
