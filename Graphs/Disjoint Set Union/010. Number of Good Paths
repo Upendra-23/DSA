@@ -1,0 +1,71 @@
+class DisjointSet {
+    public:
+    vector<int> parent, size;
+    DisjointSet(int n){
+        parent.resize(n+1,0);
+        size.resize(n+1,1);
+        for(int i=0;i<=n;i++){
+            parent[i] = i;
+        }
+    }
+    
+    int findUpar(int node){
+        if(parent[node] == node) return node;
+        return parent[node] = findUpar(parent[node]);
+    }
+    
+    void unionBySize(int u,int v){
+        int ulp_u = findUpar(u);
+        int ulp_v = findUpar(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] > size[ulp_v]){
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else{
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+
+class Solution {
+public:
+    int numberOfGoodPaths(vector<int>& vals, vector<vector<int>>& edges) {
+        unordered_map<int,vector<int>> adj;
+        for(auto it:edges){
+            adj[it[0]].push_back(it[1]);
+            adj[it[1]].push_back(it[0]);
+        }
+
+        map<int,vector<int>> valueToNodesMp;
+        for(int i=0;i<vals.size();i++)
+            valueToNodesMp[vals[i]].push_back(i);
+
+        vector<int> vis(vals.size(),0);
+        DisjointSet ds(vals.size());
+
+        int ans = vals.size();
+        for(auto [value, allNodes]: valueToNodesMp){
+            for(auto &node: allNodes){
+                for(auto &adjnode: adj[node]){
+                    if(vis[adjnode] == true){
+                        ds.unionBySize(node,adjnode);
+                    }
+                }
+                vis[node] = true;
+            }
+
+            unordered_map<int,int> parentCnt;
+            for(auto node:allNodes){
+                parentCnt[ds.findUpar(node)]++;
+            }
+
+            for(auto it:parentCnt){
+                int count = it.second;
+                ans += (count * (count-1)/2);
+            }
+        }
+        return ans;
+    }
+};
