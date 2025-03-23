@@ -4,6 +4,7 @@ class DisjointSet {
     DisjointSet(int n){
         parent.resize(n+1,0);
         size.resize(n+1,1);
+        cost.resize(n+1,-1);
         for(int i=0;i<=n;i++){
             parent[i] = i;
         }
@@ -17,14 +18,19 @@ class DisjointSet {
     void unionBySize(int u,int v,int w){
         int ulp_u = findUpar(u);
         int ulp_v = findUpar(v);
-        if(ulp_u == ulp_v) return;
+        if(ulp_u == ulp_v) {
+            cost[ulp_u] &= w;
+            return;
+        }
         if(size[ulp_u] >= size[ulp_v]){
             parent[ulp_v] = ulp_u;
             size[ulp_u] += size[ulp_v];
+            cost[ulp_u] &= cost[ulp_v] & w;
         }
         else{
             parent[ulp_u] = ulp_v;
             size[ulp_v] += size[ulp_u];
+            cost[ulp_v] &= cost[ulp_u] & w;
         }
     }
 };
@@ -38,18 +44,10 @@ public:
             ds.unionBySize(u,v,w);
         }
 
-      unordered_map<int,int> mp;
-      for(auto it:edges){
-        int u = it[0], v = it[1], w = it[2];
-        int par = ds.findUpar(u);
-        if(mp.find(par) == mp.end()) mp[par] = w;
-        else mp[par] &= w;
-      }
-
       vector<int> ans;
       for(auto it:query){
         int u = it[0], v = it[1];
-        if(ds.findUpar(u) == ds.findUpar(v)) ans.push_back(mp[ds.findUpar(u)]);
+        if(ds.findUpar(u) == ds.findUpar(v)) ans.push_back(ds.cost[ds.findUpar(u)]);
         else ans.push_back(-1);
       }
       return ans;
