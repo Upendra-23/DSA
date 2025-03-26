@@ -1,0 +1,33 @@
+class Solution {
+    int fun(vector<int> &nums){
+        int n = nums.size();
+
+        int prev1 = nums[0], prev2, curr;
+        for(int ind=1;ind<n;ind++){
+            int notpick = prev1;
+            int pick = nums[ind];
+            if(ind-2 >= 0) pick += prev2;
+            curr = max(pick, notpick);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return prev1;
+    }
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 1) return nums[0];
+
+        vector<int> nums1, nums2;
+        for(int i=0;i<n;i++){
+            if(i != 0) nums1.push_back(nums[i]);
+            if(i != n-1) nums2.push_back(nums[i]);
+        }
+
+        n--;
+
+        int val1 = fun(nums1);
+        int val2 = fun(nums2);
+        return max(val1, val2);
+    }
+};
