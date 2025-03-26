@@ -1,0 +1,26 @@
+class Solution {
+    int fun(int ind,vector<int> &height, vector<int> &dp){
+        if(ind == 0) return 0;
+        if(dp[ind] != -1) return dp[ind];
+        int jump1 = abs(height[ind]-height[ind-1]) + fun(ind-1, height,dp);
+        int jump2 = 1e9;
+        if(ind-2 >= 0)
+            jump2 = abs(height[ind]-height[ind-2]) + fun(ind-2, height,dp);
+        return dp[ind] = min(jump1, jump2);
+    }
+  public:
+    int minCost(vector<int>& height) {
+        int n = height.size();
+        int prev1 = 0, prev2, curr;
+        for(int ind=1;ind<n;ind++){
+            int jump1 = abs(height[ind]-height[ind-1]) + prev1;
+            int jump2 = 1e9;
+            if(ind-2 >= 0)
+                jump2 = abs(height[ind]-height[ind-2]) + prev2;
+            curr = min(jump1, jump2);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return prev1;
+    }
+};
