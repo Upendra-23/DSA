@@ -1,0 +1,25 @@
+class Solution {
+    int fun(int ind,vector<int> &nums, vector<int> &dp){
+        if(ind == 0) return nums[ind];
+        if(dp[ind] != -1) return dp[ind];
+        int notpick = 0+fun(ind-1,nums,dp);
+        int pick = nums[ind];
+        if(ind-2 >= 0) pick += fun(ind-2,nums,dp);
+        return dp[ind] = max(pick, notpick);
+    }
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 0);
+        int prev1 = nums[0], prev2, curr;
+        for(int ind=1;ind<n;ind++){
+            int notpick = prev1;
+            int pick = nums[ind];
+            if(ind-2 >= 0) pick += prev2;
+            curr = max(pick, notpick);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return prev1;
+    }
+};
