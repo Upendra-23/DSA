@@ -1,0 +1,39 @@
+class Solution {
+    int fun(int ind,int target,vector<int> &arr,vector<vector<int>> &dp){
+        if(ind == 0){
+            if(target == 0 && arr[0] == 0) return 2;
+            if(target == 0 || arr[0] == target) return 1;
+            return 0;
+        }
+        if(dp[ind][target] != -1) return dp[ind][target];
+        int notpick = fun(ind-1,target,arr,dp);
+        int pick = 0;
+        if(arr[ind] <= target)
+            pick = fun(ind-1,target-arr[ind],arr,dp);
+        return dp[ind][target] = pick + notpick;
+    }
+  public:
+    int countPartitions(vector<int>& arr, int d) {
+        int n = arr.size();
+        int totSum = accumulate(arr.begin(),arr.end(),0);
+        if((totSum + d < 0 || totSum + d & 1)) return 0;
+        int k = (totSum+d)/2;
+        
+        vector<vector<int>> dp(n, vector<int> (k+1,-0));
+        for(int target=0;target<=k;target++){
+            if(target == 0 && arr[0] == 0) dp[0][target] = 2;
+            else if(target == 0 || arr[0] == target) dp[0][target] = 1;
+            else dp[0][target] = 0;
+        }
+        
+        for(int ind=1;ind<n;ind++){
+            for(int target=0;target<=k;target++){
+                int notpick = dp[ind-1][target];
+                int pick = (arr[ind] <= target) ? dp[ind-1][target-arr[ind]] : 0;
+                dp[ind][target] = pick + notpick;
+            }
+        }
+        
+        return dp[n-1][k];
+    }
+};
