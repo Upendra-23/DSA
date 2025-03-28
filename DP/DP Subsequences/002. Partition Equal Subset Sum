@@ -1,0 +1,37 @@
+class Solution {
+    int fun(int ind,int target,vector<int> &nums,vector<vector<int>> &dp){
+        if(target == 0) return true;
+        if(ind == 0) return nums[0] == target;
+        if(dp[ind][target] != -1) return dp[ind][target];
+        bool notpick = fun(ind-1,target,nums,dp);
+        bool pick = false;
+        if(nums[ind] <= target)
+            pick = fun(ind-1,target-nums[ind],nums,dp);
+        return dp[ind][target] = pick || notpick;
+    }
+public:
+    bool canPartition(vector<int>& nums) {
+        int n = nums.size();
+        int totalSum = accumulate(nums.begin(),nums.end(),0);
+        if(totalSum & 1) return false;
+        int k = totalSum / 2;
+
+        vector<vector<int>> dp(n, vector<int> (k+1,0));
+        for(int i=0;i<n;i++) dp[i][0] = true;
+        for(int j=0;j<=k;j++){
+            if(nums[0] == j) dp[0][j] = true;
+            else dp[0][j] = false;
+        }
+
+        for(int ind=1;ind<n;ind++){
+            for(int target=1;target<=k;target++){
+                bool notpick = dp[ind-1][target];
+                bool pick = false;
+                if(nums[ind] <= target)
+                    pick = dp[ind-1][target-nums[ind]];
+                dp[ind][target] = pick || notpick;
+            }
+        }
+        return dp[n-1][k];
+    }
+};
