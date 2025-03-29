@@ -1,0 +1,29 @@
+class Solution {
+    int fun(int ind,int target,vector<int> &coins,vector<vector<int>> &dp){
+        if(ind == 0){
+            if(target % coins[0] == 0) return 1;
+            return 0;
+        }
+        if(dp[ind][target] != -1) return dp[ind][target];
+        int notpick = fun(ind-1,target,coins,dp);
+        int pick = (coins[ind] <= target) ? fun(ind,target-coins[ind],coins,dp) : 0;
+        return dp[ind][target] = pick + notpick;
+    }
+public:
+    int change(int amount, vector<int>& coins) {
+        int n = coins.size();
+        vector<vector<unsigned long long>> dp(n, vector<unsigned long long> (amount+1, 0));
+        for(long long target = 0; target <= amount; target++) {
+            if(target % coins[0] == 0) dp[0][target] = 1;
+            else dp[0][target] = 0;
+        }
+        for(int ind=1;ind<n;ind++){
+            for(long long target=0;target<=amount;target++){
+                unsigned long long notpick = dp[ind-1][target];
+                unsigned long long pick = (coins[ind] <= target) ? dp[ind][target-coins[ind]] : 0;
+                dp[ind][target] = (pick + notpick*1l);
+            }
+        }
+        return dp[n-1][amount];
+    }
+};
