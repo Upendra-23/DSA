@@ -1,0 +1,30 @@
+class Solution {
+    int fun(int ind,int target,vector<int> &val,vector<int> &wt,vector<vector<int>> &dp){
+        if(ind == 0){
+            if(wt[ind] <= target) return  val[ind] * (target / wt[ind]);
+            return 0;
+        }
+        if(dp[ind][target] != -1) return dp[ind][target];
+        int notpick = fun(ind-1,target,val,wt,dp);
+        int pick = 0;
+        if(wt[ind] <= target)
+            pick = val[ind] + fun(ind,target-wt[ind],val,wt,dp);
+        return dp[ind][target] = max(pick, notpick);
+    }
+  public:
+    int knapSack(vector<int>& val, vector<int>& wt, int capacity) {
+        int n = val.size();
+        vector<vector<int>> dp(n,vector<int> (capacity+1, 0));
+        for(int target=0;target<=capacity;target++){
+            if(wt[0] <= target) dp[0][target] = val[0] * (target / wt[0]);
+            else dp[0][target] = 0;
+        }
+        
+        for(int ind=1;ind<n;ind++){
+            for(int target=0;target<=capacity;target++){
+                dp[ind][target] = max(dp[ind-1][target], (wt[ind] <= target) ? val[ind] + dp[ind][target-wt[ind]] : 0);
+            }
+        }
+        return dp[n-1][capacity];
+    }
+};
