@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 1), ways(n, 1);
+
+        int maxLen = 0;
+        for(int curr=1;curr<n;curr++){
+            for(int prev=0;prev<curr;prev++){
+                if(nums[curr] > nums[prev]){
+                    if(1 + dp[prev] > dp[curr]){
+                        dp[curr] = 1 + dp[prev];
+                        ways[curr] = ways[prev];
+                    }
+                    else{
+                        ways[curr] += ways[prev];
+                    }
+                }
+            }
+            maxLen = max(maxLen, dp[curr]);
+        }
+        int cnt = 0;
+        for(int i=0;i<n;i++){
+            if(dp[i] == maxLen) cnt += ways[i];
+        }
+        return cnt;
+    }
+};
