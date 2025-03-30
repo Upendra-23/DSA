@@ -1,0 +1,34 @@
+class Solution {
+    bool isSame(string s1, string s2){
+        int n = s1.size(), m = s2.size();
+        if(n - m != 1) return false;
+        int i = 0, j = 0;
+        while(i < n && j < m){
+            if(s1[i] != s2[j]) i++;
+            else {
+                i++;
+                j++;
+            }
+        }
+        return j == m && (i == n || i == n-1);
+    }
+    static bool comp(string &a, string &b){
+        return a.length() < b.length();
+    }
+public:
+    int longestStrChain(vector<string>& words) {
+        int n = words.size();
+        sort(words.begin(), words.end(), comp);
+        vector<int> dp(n, 1);
+
+        int maxLen = 0;
+        for(int curr=0;curr<n;curr++){
+            for(int prev=0;prev<curr;prev++){
+                if(isSame(words[curr], words[prev]) && 1+dp[prev] > dp[curr])
+                    dp[curr] = 1+dp[prev];
+            }
+            maxLen = max(maxLen, dp[curr]);
+        }
+        return maxLen;
+    }
+};
