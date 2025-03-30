@@ -1,0 +1,35 @@
+class Solution {
+    bool isDiv(int a,int b){
+        return a % b == 0;
+    }
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<int> dp(n, 1), parent(n, 0);
+        for(int i=0;i<n;i++) parent[i] = i;
+
+        int ind = -1, maxLen = 0;
+        for(int curr=0;curr<n;curr++){
+            for(int prev=0;prev<curr;prev++){
+                if(isDiv(nums[curr], nums[prev]) && 1+dp[prev] > dp[curr]){
+                    dp[curr] = 1+dp[prev];
+                    parent[curr] = prev;
+                }
+            }
+            if(dp[curr] > maxLen){
+                maxLen = dp[curr];
+                ind = curr;
+            }
+        }
+
+        vector<int> ans;
+        ans.push_back(nums[ind]);
+        while(ind != parent[ind]){
+            ans.push_back(nums[parent[ind]]);
+            ind = parent[ind];
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+};
