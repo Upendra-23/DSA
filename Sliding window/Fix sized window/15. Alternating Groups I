@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int numberOfAlternatingGroups(vector<int>& colors) {
+        int cnt = 0;
+        int i = 0, j = 0;
+        int n = colors.size();
+        while(i < n){
+            if(j-i+1 < 3) j++;
+            else{
+                if(colors[i%n] == colors[j % n] && colors[i%n] != colors[(i+1)%n]) cnt++;
+                i++;
+                j++;
+            }
+        }
+        return cnt;
+    }
+};
