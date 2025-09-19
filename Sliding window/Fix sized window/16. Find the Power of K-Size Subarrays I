@@ -1,0 +1,20 @@
+class Solution {
+public:
+    vector<int> resultsArray(vector<int>& nums, int k) {
+        vector<int> ans;
+        int cnt = 1;
+        int i = 0, j = 0;
+        while(j < nums.size()){
+            if(j > 0 && nums[j] == nums[j-1]+1) cnt++;
+            else if(j > 0 && nums[j] != nums[j-1]+1) cnt = 1;
+            if(j-i+1 < k) j++;
+            else{
+                if(cnt >= k) ans.push_back(nums[j]);
+                else ans.push_back(-1);
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+};
