@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int minKBitFlips(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> isFlipped(n,0);
+        int ans = 0, op = 0;
+
+        int i = 0, j = 0;
+        while(j < n){
+            if((nums[j] == 0 && op%2 == 0) || (nums[j] == 1 && op%2 == 1)){
+                if(j > n-k) return -1;
+                op++;
+                ans++;
+                isFlipped[j] = true;
+            }
+            if(j-i+1 < k) j++;
+            else{
+                if(isFlipped[i] == true) op -= 1;
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+};
