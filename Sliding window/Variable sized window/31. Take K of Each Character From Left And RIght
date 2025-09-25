@@ -1,0 +1,36 @@
+class Solution {
+    bool isPossible(string &s, int k, int K){
+        unordered_map<char,int> mp;
+        int n = s.size();
+        int i = n-k, j;
+        for(j=i;j<n;j++) mp[s[j]]++;
+        j = n-1;
+        
+        if(mp['a'] >= K && mp['b'] >= K && mp['c'] >= K) return true;
+
+        while(i < n){
+            mp[s[i]]--;
+            i++;
+            j++;
+            mp[s[j%n]]++;
+            if(mp['a'] >= K && mp['b'] >= K && mp['c'] >= K) return true;
+        }
+        return false;
+    }
+public:
+    int takeCharacters(string s, int k) {
+        if(k == 0) return 0;
+        int low = k * 3;
+        int high = s.size();
+        int ans = -1;
+        while(low <= high){
+            int mid = low+(high-low)/2;
+            if(isPossible(s, mid, k)){
+                ans = mid;
+                high = mid-1;
+            }
+            else low = mid+1;
+        }
+        return ans;
+    }
+};
