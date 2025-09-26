@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int mod = (int)(1e9+7);
+    int numSub(string s) {
+        unordered_map<char,int> mp;
+        int ans = 0, i = 0, j = 0;
+        while(j < s.size()){
+            mp[s[j]]++;
+            while(mp.size() > 1){
+                mp[s[i]]--;
+                if(mp[s[i]] == 0)
+                    mp.erase(s[i]);
+                i++;
+            }
+            if(mp['1'] > 0) ans = (ans + j-i+1)%mod;
+            j++;
+        }
+        return ans;
+    }
+};
