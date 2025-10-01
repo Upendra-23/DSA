@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int> pq;
+        for(auto it:nums) pq.push(it);
+        k--;
+        while(k--) pq.pop();
+        return pq.top();
+    }
+};
+
+class Solution {
+    int partition(vector<int> &nums,int low,int high){
+        int p = nums[low];
+        int i = low+1;
+        int j = high;
+        while(i <= j){
+            if(nums[i] > p && nums[j] < p){
+                swap(nums[i],nums[j]);
+                i++;
+                j--;
+            }
+            if(nums[i] <= p) i++;
+            if(nums[j] >= p) j--;
+        }
+        swap(nums[low], nums[j]);
+        return j;
+    }
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int n = nums.size();
+        int low = 0, high = n-1;
+        while(low <= high){
+            int ind = partition(nums, low, high);
+            if(ind == n-k) return nums[ind];
+            else if(ind > n-k) high = ind-1;
+            else low = ind+1;
+        }
+        return -1;
+    }
+};
