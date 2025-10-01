@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int halveArray(vector<int>& nums) {
+        int cnt = 0;
+        priority_queue<double> pq;
+        double totalSum = 0;
+        for(auto it:nums){
+            totalSum += it;
+            pq.push(it);
+        }
+
+        double k = totalSum/2.0;
+        while(totalSum > k){
+            double num = pq.top();
+            pq.pop();
+
+            totalSum -= num;
+            totalSum += (num/2.0);
+            pq.push((num/2.0));
+            cnt++;
+        }
+        return cnt;
+    }
+};
