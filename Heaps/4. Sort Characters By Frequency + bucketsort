@@ -18,3 +18,22 @@ public:
         return ans;
     }
 };
+
+
+class Solution {
+public:
+    string frequencySort(string s) {
+        unordered_map<char,int> mp;
+        for(auto it:s) mp[it]++;
+
+        vector<vector<char>> buckets(s.size()+1);
+        for(auto [ch, freq]: mp) buckets[freq].push_back(ch);
+
+        string ans = "";
+        for(int freq=s.size();freq>=1;freq--){
+            for(auto ch: buckets[freq])
+                ans.append(freq, ch);
+        }
+        return ans;
+    }
+};
