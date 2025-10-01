@@ -1,0 +1,44 @@
+class Solution {
+  public:
+    int kthSmallest(vector<int> &arr, int k) {
+        priority_queue<int,vector<int>,greater<int>> pq;
+        for(auto it:arr) pq.push(it);
+        k--;
+        while(k--) pq.pop();
+        return pq.top();
+    }
+};
+
+class Solution {
+    int partition(vector<int> &arr, int low, int high){
+        int p = arr[low];
+        int i = low+1;
+        int j = high;
+        while(i <= j){
+            if(arr[i] > p && arr[j] < p){
+                swap(arr[i], arr[j]);
+                i++;
+                j--;
+            }
+            if(arr[i] <= p) i++;
+            if(arr[j] >= p) j--;
+        }
+        swap(arr[j], arr[low]);
+        return j;
+    }
+  public:
+    // arr : given array
+    // k : find kth smallest element and return using this function
+    int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        int low = 0;
+        int high = arr.size()-1;
+        while(low <= high){
+            int ind = partition(arr, low, high);
+            if(ind == k-1) return arr[ind];
+            else if(ind > k-1) high = ind-1;
+            else low = ind+1;
+        }
+        return -1;
+    }
+};
