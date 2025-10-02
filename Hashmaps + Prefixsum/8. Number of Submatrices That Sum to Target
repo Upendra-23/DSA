@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int k) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+
+        for(int i=0;i<n;i++){
+            for(int j=1;j<m;j++)
+                matrix[i][j] += matrix[i][j-1];
+        }
+
+        int res = 0;
+        for(int startCol=0;startCol<m;startCol++){
+            for(int col=startCol;col<m;col++){
+
+                unordered_map<int,int> mp;
+                mp.insert({0, 1});
+                int cumSum = 0;
+                for(int row=0;row<n;row++){
+                    cumSum += matrix[row][col] - (startCol > 0 ? matrix[row][startCol-1] : 0);
+                    if(mp.find(cumSum-k) != mp.end())
+                        res += mp[cumSum-k];
+                    mp[cumSum]++;
+                }
+            }
+        }
+        return res;
+    }
+};
