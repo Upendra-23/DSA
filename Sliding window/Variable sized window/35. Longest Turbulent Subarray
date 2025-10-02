@@ -1,0 +1,28 @@
+class Solution {
+    void longestLen(vector<int> &arr, int &maxLen, bool flag){
+        int n = arr.size();
+        int i = 0, j = 0;
+        while(j < n-1){
+            if((j%2 == 0) && ((flag && arr[j] >= arr[j+1]) || (!flag && (arr[j] <= arr[j+1])))){
+                i = j+1;
+                j++;
+                continue;
+            }
+            if((j&1) && ((flag && arr[j] <= arr[j+1]) || (!flag && arr[j] >= arr[j+1]))){
+                i = j+1;
+                j++;
+                continue;
+            }
+            maxLen = max(maxLen, j-i+1+1);
+            j++;
+        }
+    }
+public:
+    int maxTurbulenceSize(vector<int>& arr) {
+        int n = arr.size();
+        int maxLen = 1;
+        longestLen(arr, maxLen, true);
+        longestLen(arr, maxLen, false);
+        return maxLen;
+    }
+};
