@@ -1,0 +1,38 @@
+class Solution {
+    bool helper(vector<int> &nums, set<vector<int>> &s, int k, bool find){
+        vector<int> temp;
+        int i = 0, j = 0;
+        while(j < nums.size()){
+            temp.push_back(nums[j]);
+            if(j-i+1 < k) j++;
+            else{
+                if(!find) s.insert(temp);
+                else if(s.find(temp) != s.end()) return true;
+                temp.erase(temp.begin());
+                i++;
+                j++; 
+            }       
+        }
+        return false;
+    }
+    bool isPossible(vector<int> &nums1, vector<int> &nums2, int k){
+        set<vector<int>> s;
+        helper(nums1, s, k, false);
+        return helper(nums2, s, k, true);
+    }
+public:
+    int findLength(vector<int>& nums1, vector<int>& nums2) {
+        int n = min(nums1.size(), nums2.size());
+        int ans = 0;
+        int low = 1, high = n;
+        while(low <= high){
+            int mid = low+(high-low)/2;
+            if(isPossible(nums1, nums2, mid)){
+                ans = mid;
+                low = mid+1;
+            }
+            else high = mid-1;
+        }
+        return ans;
+    }
+};
