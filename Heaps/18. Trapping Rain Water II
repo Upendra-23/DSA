@@ -1,0 +1,52 @@
+class Solution {
+    bool isvalid(int row,int col,int n,int m){
+        return row >= 0 && row < n && col >= 0 && col < m;
+    }
+public:
+    typedef vector<int> P;
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        int n = heightMap.size();
+        int m = heightMap[0].size();
+
+        priority_queue<P, vector<P>, greater<P>> pq;
+        vector<vector<int>> vis(n, vector<int> (m, 0));
+
+        for(int row=0;row<n;row++){
+            for(int col:{0, m-1}){
+                pq.push({heightMap[row][col],row,col});
+                vis[row][col] = true;
+            }
+        }
+
+        for(int col=0;col<m;col++){
+            for(int row:{0, n-1}){
+                pq.push({heightMap[row][col],row,col});
+                vis[row][col] = true;
+            }
+        }
+
+        int dr[] = {-1,0,0,1};
+        int dc[] = {0,-1,1,0};
+
+        int water = 0;
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+
+            int currHeight = it[0];
+            int row = it[1];
+            int col = it[2];
+
+            for(int i=0;i<4;i++){
+                int arow = row + dr[i];
+                int acol = col + dc[i];
+                if(isvalid(arow, acol, n, m) && !vis[arow][acol]){
+                    water += max(currHeight - heightMap[arow][acol], 0);
+                    pq.push({max(currHeight, heightMap[arow][acol]), arow, acol});
+                    vis[arow][acol] = true;
+                }
+            }
+        }
+        return water;
+    }
+};
