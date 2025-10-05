@@ -1,21 +1,21 @@
 class Solution {
-public:
-    int numSubarraysWithSum(vector<int>& nums, int goal) {
-        int sum = 0, countZeros = 0, res = 0;
+    int atMostK(vector<int> &nums, int k){
+        if(k < 0) return 0;
+        int ans = 0, cntOnes = 0;
         int i = 0, j = 0;
         while(j < nums.size()){
-            sum += nums[j];
-            while(i < j && (nums[i] == 0 || sum > goal)){
-                if(nums[i] == 0) countZeros++;
-                else countZeros = 0;
-                sum -= nums[i];
+            if(nums[j] == 1) cntOnes++;
+            while(cntOnes > k){
+                if(nums[i] == 1) cntOnes--;
                 i++;
             }
-            if(sum == goal){
-                res += countZeros+1;
-            }
+            ans += (j-i+1);
             j++;
         }
-        return res;
+        return ans;
+    }
+public:
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        return atMostK(nums, goal) - atMostK(nums, goal-1); 
     }
 };
