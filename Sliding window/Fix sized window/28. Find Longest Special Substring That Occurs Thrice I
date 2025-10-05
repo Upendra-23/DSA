@@ -1,0 +1,38 @@
+class Solution {
+    bool isPossible(string &s, int k){
+        unordered_map<char,int> charFreqs, charFreqsMore;
+        int i = 0, j = 0;
+        while(j < s.size()){
+            charFreqs[s[j]]++;
+            if(j-i+1 < k) j++;
+            else{
+                if(charFreqs.size() == 1) {
+                    charFreqsMore[s[j]]++;
+                    if(charFreqsMore[s[j]] >= 3)
+                        return true;
+                }
+                charFreqs[s[i]]--;
+                if(charFreqs[s[i]] == 0) {
+                    charFreqs.erase(s[i]);
+                }
+                i++;
+                j++;
+            }
+        }
+        return false;
+    }
+public:
+    int maximumLength(string s) {
+        int ans = -1;
+        int low = 1, high = s.size();
+        while(low <= high){
+            int mid = low+(high-low)/2;
+            if(isPossible(s, mid)){
+                ans = mid;
+                low = mid+1;
+            }
+            else high = mid-1;
+        }
+        return ans;
+    }
+};
