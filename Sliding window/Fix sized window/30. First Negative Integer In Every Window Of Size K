@@ -1,0 +1,19 @@
+#include <bits/stdc++.h> 
+vector<int> firstNegativeInteger(vector<int> &arr, int k, int n)
+{
+    deque<int> dq;
+    vector<int> ans;
+    int i = 0 , j = 0;
+    while(j < n){
+        if(arr[j] < 0) dq.push_back(arr[j]);
+        if(j-i+1 < k) j++;
+        else{
+            if(!dq.empty()) ans.push_back(dq.front());
+            else ans.push_back(0);
+            if(!dq.empty() && dq.front() == arr[i]) dq.pop_front();
+            i++;
+            j++;
+        }
+    }
+    return ans;
+}
