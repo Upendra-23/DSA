@@ -1,0 +1,27 @@
+class Solution {
+public:
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
+        int n = spells.size();
+        int m = potions.size();
+        unordered_map<int,int> mp;
+        
+        vector<int> tempSpells = spells;
+        sort(tempSpells.begin(), tempSpells.end(), greater<int>());
+        sort(potions.begin(), potions.end());
+        int i = 0, j = 0;
+        while(i < n){
+            long long prod = tempSpells[i];
+            while(j < m && (prod * potions[j]) < success) j++;
+            if(j < m) mp[tempSpells[i]] = m-j;
+            else mp[tempSpells[i]] = 0;
+            i++;
+        }
+
+        vector<int> ans(n, -1);
+        for(int i=0;i<n;i++){
+            ans[i] = mp[spells[i]];
+        }
+
+        return ans;
+    }
+};
