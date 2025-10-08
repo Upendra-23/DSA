@@ -1,0 +1,17 @@
+        int n = s.size();
+        vector<int> nums(n, 0);
+
+        for(auto &shift: shifts){
+            int L = shift[0];
+            int R = shift[1];
+            int dir = shift[2] > 0 ? 1 : -1;
+            nums[L] += dir;
+            if(R+1 < n)
+                nums[R+1] -= dir;
+        }
+
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            sum += nums[i];
+            nums[i] = sum;
+        }
