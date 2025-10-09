@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int longestEqualSubarray(vector<int>& nums, int k) {
+        int ans = 1;
+        unordered_map<int,int> mp;
+        int maxFreq = 0;
+        int i = 0, j = 0;
+        while(j < nums.size()){
+            mp[nums[j]]++;
+            maxFreq = max(maxFreq, mp[nums[j]]);
+            if((j-i+1) - maxFreq > k){
+                mp[nums[i]]--;
+                i++;
+            }
+            if((j-i+1) - maxFreq <= k)
+                ans = max(ans, j-i+1 - (j-i+1 - maxFreq));
+            j++;
+        }
+        return ans;
+    }
+};
