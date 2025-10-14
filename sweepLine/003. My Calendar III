@@ -1,0 +1,18 @@
+class MyCalendarThree {
+    map<int,int> mp;
+public:
+    MyCalendarThree() {
+        
+    }
+    
+    int book(int startTime, int endTime) {
+        mp[startTime]++;
+        mp[endTime]--;
+        int sum = 0, ans = 0;
+        for(auto it:mp){
+            sum += it.second;
+            ans = max(ans, sum);
+        }        
+        return ans;
+    }
+};
