@@ -1,0 +1,18 @@
+class Solution {
+  public:
+    bool canAttend(vector<vector<int>> &intervals) {
+        // Code Here
+        map<int,int> mp;
+        for(auto it:intervals){
+            mp[it[0]]++;
+            mp[it[1]]--;
+        }
+
+        int cnt = 0;
+        for(auto &it: mp){
+            cnt += it.second;
+            if(cnt > 1) return false;
+        }
+        return true;
+    }
+};
