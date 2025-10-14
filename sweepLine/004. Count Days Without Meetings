@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int countDays(int days, vector<vector<int>>& meetings) {
+        map<int,int> mp;
+        for(auto it:meetings){
+            mp[it[0]]++;
+            mp[it[1]+1]--;
+        }
+
+        int cnt = 0;
+        auto it = mp.begin();
+        cnt += it->first - 1;
+        it++;
+        while(it != mp.end()){
+            it->second += prev(it)->second;
+            if(it->first <= days && it->second == 0){
+                if(next(it) != mp.end()){
+                    cnt += next(it)->first - it->first;
+                }
+                else cnt += days+1 - it->first;
+            }
+            it++;
+        }
+        return cnt;
+    }
+};
