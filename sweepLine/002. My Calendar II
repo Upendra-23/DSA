@@ -1,0 +1,22 @@
+class MyCalendarTwo {
+    map<int,int> mp;
+public:
+    MyCalendarTwo() {
+        
+    }
+    
+    bool book(int startTime, int endTime) {
+        mp[startTime]++;
+        mp[endTime]--;
+        int sum = 0;
+        for(auto it:mp){
+            sum += it.second;
+            if(sum > 2){
+                mp[startTime]--;
+                mp[endTime]++;
+                return false;
+            }
+        }        
+        return true;
+    }
+};
