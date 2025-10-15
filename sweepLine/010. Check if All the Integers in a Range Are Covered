@@ -1,0 +1,20 @@
+class Solution {
+public:
+    bool isCovered(vector<vector<int>>& ranges, int left, int right) {
+        vector<int> diff(52, 0);
+        for(auto &it:ranges){
+            diff[it[0]]++;
+            diff[it[1]+1]--;
+        }
+
+        int sum = 0;
+        for(int i=0;i<52;i++){
+            sum += diff[i];
+            if(i >= left && i <= right){
+                if(sum == 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+};
