@@ -1,0 +1,24 @@
+class Solution {
+public:
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& people) {
+        map<int,int> mp;
+        for(auto &it: flowers){
+            mp[it[0]]++;
+            mp[it[1]+1]--;
+        }
+
+        int ol = 0;
+        for(auto &it: mp){
+            ol += it.second;
+            mp[it.first] = ol;
+        }
+
+        vector<int> ans;
+        for(auto pt: people){
+           auto it = mp.upper_bound(pt);
+           if(it == mp.begin()) ans.push_back(0);
+           else ans.push_back(prev(it)->second);
+        }
+        return ans;
+    }
+};
