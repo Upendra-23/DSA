@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int minGroups(vector<vector<int>>& intervals) {
+        map<int,int> mp;
+        for(auto &it: intervals){
+            mp[it[0]]++;
+            mp[it[1]+1]--;
+        }
+
+        int overlaps = 0, maxOverlaps = 0;
+        for(auto &it: mp){
+            overlaps += it.second;
+            maxOverlaps = max(maxOverlaps, overlaps);
+        }
+        return maxOverlaps;
+    }
+};
