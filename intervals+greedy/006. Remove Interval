@@ -1,0 +1,25 @@
+//https://www.naukri.com/code360/problems/remove-interval_1380268?leftPanelTabValue=PROBLEM
+
+#include <bits/stdc++.h> 
+vector<vector<int>> removeInterval (vector<vector<int>> &rangeList, vector<int> &removeInterval, int n)
+{
+    vector<int> newInterval = removeInterval;
+    vector<vector<int>> ans;
+    int i = 0;
+    while(i < n && rangeList[i][1] <= newInterval[0]) ans.push_back(rangeList[i++]);
+    if(i < n){
+        while(i < n && newInterval[1] > rangeList[i][0]){
+            newInterval[0] = min(newInterval[0], rangeList[i][0]);
+            newInterval[1] = max(newInterval[1], rangeList[i][1]);
+            i++;
+        }
+        if(newInterval[0] != removeInterval[0]) {
+            ans.push_back({newInterval[0], removeInterval[0]});
+        }
+        if(newInterval[1] != removeInterval[1]){
+            ans.push_back({removeInterval[1],newInterval[1]});
+        }
+    }
+    while(i < n) ans.push_back(rangeList[i++]);
+    return ans;
+}
