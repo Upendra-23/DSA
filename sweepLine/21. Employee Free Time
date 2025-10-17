@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+vector<int> findFreeIntervals(vector<vector<int>> &schedules) {
+    map<int, int> mp;
+    for (auto &vec : schedules) {
+        for (int i = 0; i < vec.size(); i += 2) {
+            mp[vec[i]]++;
+            mp[vec[i + 1]]--;
+        }
+    }
+
+    for (auto it : mp) {
+        cout << it.first << " " << it.second << endl;
+    }
+
+    int ol = 0, flag = false;
+    vector<int> ans;
+    for (auto it : mp) {
+        ol += it.second;
+
+        if (flag && ol > 0) {
+            ans.push_back(it.first);
+            flag = false;
+        }
+        if (ol == 0) {
+            flag = true;
+            ans.push_back(it.first);
+        }
+    }
+
+    ans.pop_back();
+    return ans;
+}
