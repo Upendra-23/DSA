@@ -1,0 +1,18 @@
+class Solution {
+  public:
+    int minPlatform(vector<int>& arr, vector<int>& dep) {
+        // code here
+        map<int,int> mp;
+        for(int i=0;i<arr.size();i++){
+            mp[arr[i]]++;
+            mp[dep[i]+1]--;
+        }
+        
+        int platformsCnt = 0, ans = 0;
+        for(auto it:mp){
+            platformsCnt += it.second;
+            ans = max(ans, platformsCnt);
+        }
+        return ans;
+    }
+};
