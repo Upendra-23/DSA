@@ -1,0 +1,40 @@
+class Solution {
+public:
+    long long shiftDistance(string s, string t, vector<int>& nextCost, vector<int>& previousCost) {
+        
+        vector<long long> nextcost_pfsum(26, 0), prevcost_sfsum(26, 0);
+        nextcost_pfsum[0] = nextCost[0];
+        prevcost_sfsum[25] = previousCost[25];
+
+        for(int i=1;i<26;i++){
+            nextcost_pfsum[i] += nextcost_pfsum[i-1] + nextCost[i];
+        }
+
+        for(int i=24;i>=0;i--){
+            prevcost_sfsum[i] += prevcost_sfsum[i+1] + previousCost[i];
+        }
+
+        int n = s.size();
+        long long ans = 0;
+        for(int i=0;i<n;i++) {
+
+            int start = s[i] - 'a';
+            int end = t[i] - 'a';
+
+            if(s[i] != t[i]) {
+                
+                if(s[i] < t[i]) {
+                    long long forwardsum = nextcost_pfsum[end - 1] - ((start-1 >= 0) ? nextcost_pfsum[start-1] : 0);
+                    long long backwardsum = prevcost_sfsum[0] - prevcost_sfsum[start+1] + (end == 25 ? 0 : prevcost_sfsum[end+1]);
+                    ans += min(forwardsum, backwardsum);
+                }
+                else {
+                    long long backwardsum = prevcost_sfsum[end+1] - (start >= 25 ? 0 : prevcost_sfsum[start+1]);
+                    long long forwardsum = nextcost_pfsum[25] - nextcost_pfsum[start - 1] + (end != 0 ? nextcost_pfsum[end - 1] : 0);
+                    ans += min(forwardsum, backwardsum);
+                }
+            }
+        }
+        return ans;
+    }
+};
