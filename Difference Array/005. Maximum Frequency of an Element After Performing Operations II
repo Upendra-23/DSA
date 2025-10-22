@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int maxFrequency(vector<int>& nums, int k, int numOperations) {
+        map<int,int> mp;
+        unordered_map<int,int> arrmp;
+        for(auto it:nums){
+            int l = it - k;
+            int r = it + k;
+            mp[l]++;
+            mp[r+1]--;
+            mp[it] += 0;
+            arrmp[it]++;
+        }
+
+        int cnt = 0, ans = 1;
+        for(auto it:mp){
+            int el = it.first;
+            cnt += it.second;
+            int actualfreq = arrmp[el];
+            int requiredops = cnt - actualfreq;
+            int allowedops = min(numOperations, requiredops);
+            ans = max(ans, actualfreq + allowedops);
+        }
+        return ans;
+
+    }
+};
