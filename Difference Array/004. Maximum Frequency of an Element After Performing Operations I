@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int maxFrequency(vector<int>& nums, int k, int numOperations) {
+        
+        int max_element = -1;
+        unordered_map<int,int> mp;
+        for(auto it:nums){
+            mp[it]++;
+            max_element = max(max_element, it);
+        }
+        
+        int n = max_element + k + 2;
+        vector<int> diff(n, 0);
+
+        for(auto el: nums){
+            int l = max(0, el - k);
+            int r = el + k;
+            diff[l]++;
+            diff[r+1]--;
+        }
+
+        int maxfreq = 1, cnt = 0;
+        for(int target=0;target<n;target++){
+            cnt += diff[target];
+            int actualFreq = mp.find(target) != mp.end() ? mp[target] : 0;
+            int requiredOps = cnt - actualFreq;
+            int possibleOps = min(numOperations, requiredOps);
+            maxfreq = max(maxfreq, actualFreq + possibleOps);
+        }
+        return maxfreq;
+    }
+};
