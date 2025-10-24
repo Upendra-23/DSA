@@ -1,0 +1,35 @@
+class CountIntervals {
+    set<pair<long long,long long>> s;
+    int cnt;
+public:
+    CountIntervals() {
+        cnt = 0;
+    }
+    
+    void add(int left, int right) {
+        auto it = s.lower_bound({left, right});
+        pair<long long,long long> newInterval = {left, right};
+        if(it != s.begin() && prev(it)->second >= left) it--;
+        while(it != s.end() && newInterval.second >= it->first) {
+            cnt -= (it->second - it->first + 1);
+            newInterval.first = min(newInterval.first, it->first);
+            newInterval.second = max(newInterval.second, it->second);
+            auto temp = it;
+            it++;
+            s.erase(temp);
+        }
+        s.insert(newInterval);
+        cnt += newInterval.second - newInterval.first + 1;
+    }
+    
+    int count() {
+        return cnt;
+    }
+};
+
+/**
+ * Your CountIntervals object will be instantiated and called as such:
+ * CountIntervals* obj = new CountIntervals();
+ * obj->add(left,right);
+ * int param_2 = obj->count();
+ */
