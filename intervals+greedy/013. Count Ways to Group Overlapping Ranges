@@ -1,0 +1,28 @@
+class Solution {
+    int getPower(int n){
+        long long p = 1;
+        for(int i=1;i<=n;i++) {
+            p = (p * 2)%mod;
+        }
+        return p;
+    }
+public:
+    int mod = (int)(1e9+7);
+    int countWays(vector<vector<int>>& ranges) {
+        sort(ranges.begin(), ranges.end());
+
+        vector<vector<int>> ans;
+        vector<int> prev = ranges[0];
+        for(int i=1;i<ranges.size();i++){
+            vector<int> curr = ranges[i];
+            if(prev[1] >= curr[0]){
+                prev[1] = max(prev[1], curr[1]);
+            } else {
+                ans.push_back(prev);
+                prev = curr;
+            }
+        }
+        ans.push_back(prev);
+        return getPower(ans.size());
+    }
+};
