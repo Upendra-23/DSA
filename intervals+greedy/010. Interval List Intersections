@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+        vector<vector<int>> ans;
+        int i = 0, j = 0, n = firstList.size(), m = secondList.size();
+
+        while(i < n && j < m) {
+           vector<vector<int>> intervals = {firstList[i], secondList[j]};
+           sort(intervals.begin(), intervals.end());
+
+           vector<int> first = intervals[0], last = intervals[1];
+
+           if(first[1] >= last[0]) {
+                ans.push_back({last[0], min(last[1], first[1])});
+           }
+
+           if(firstList[i][1] < secondList[j][1]) i++;
+           else j++;
+        }
+
+        return ans;
+    }
+};
