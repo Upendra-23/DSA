@@ -1,0 +1,92 @@
+class Solution {
+    void insert(set<pair<long long,long long>> &top, set<pair<long long,long long>> &bottom, 
+    unordered_map<long long, long long> &mp, long long &sum, int val, int x) {
+
+        pair<long long,long long> pairToLook = {mp[val], val};
+        mp[val]++;
+
+        if(top.find(pairToLook) != top.end()) {
+            top.erase(pairToLook);
+            sum += val;
+            top.insert({mp[val], val});
+        }
+        else if(bottom.find(pairToLook) != bottom.end()) {
+            bottom.erase(pairToLook);
+            bottom.insert({mp[val], val});
+        }
+        else {
+            bottom.insert({mp[val], val});
+        }
+
+        if(top.size() < x && bottom.size() > 0) {
+            auto it = *bottom.rbegin();
+            bottom.erase(it);
+            top.insert(it);
+            sum += it.first * it.second;
+        }
+        else if(top.size() == x & bottom.size() > 0) {
+            auto top_pair = *top.begin();
+            auto btm_pair = *bottom.rbegin();
+            if(top_pair.first < btm_pair.first || 
+            (top_pair.first == btm_pair.first && top_pair.second < btm_pair.second)) {
+                top.erase(top_pair);
+                top.insert(btm_pair);
+                sum -= top_pair.first * top_pair.second;
+                sum += btm_pair.first * btm_pair.second;
+                bottom.erase(btm_pair);
+                bottom.insert(top_pair);
+            }
+        }
+    }
+
+    void remove(set<pair<long long,long long>> &top, set<pair<long long,long long>> &bottom, 
+    unordered_map<long long, long long> &mp, long long &sum, int val, int x) {
+
+        pair<long long, long long> pairToLook = {mp[val], val};
+        mp[val]--;
+
+        if(top.find(pairToLook) != top.end()) {
+            top.erase(pairToLook);
+            sum -= pairToLook.first * pairToLook.second;
+            if(mp[val] > 0)
+                bottom.insert({mp[val], val});
+        }
+        else if(bottom.find(pairToLook) != bottom.end()) {
+            bottom.erase(pairToLook);
+            if(mp[val] > 0)
+                bottom.insert({mp[val], val});
+        }
+
+        if(top.size() < x && bottom.size() > 0) {
+            auto it = *bottom.rbegin();
+            bottom.erase(it);
+            top.insert(it);
+            sum += it.first * it.second;
+        }
+
+        if(mp[val] == 0) {
+            mp.erase(val);
+        }
+    }
+public:
+    vector<long long> findXSum(vector<int>& nums, int k, int x) {
+        set<pair<long long,long long>> top, bottom;
+        unordered_map<long long, long long> mp;
+        vector<long long> ans;
+        long long sum = 0;
+
+        int n = nums.size();
+        int i = 0, j = 0;
+        while(j < n) {
+            insert(top, bottom, mp, sum, nums[j], x);
+            if(j-i+1 < k) j++;
+            else {
+                ans.push_back(sum);
+                remove(top, bottom, mp, sum, nums[i], x);
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+};
