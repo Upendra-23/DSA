@@ -1,0 +1,80 @@
+class DisJointSet {
+    public:
+    vector<int> parent, size;
+    DisJointSet(int n) {
+        parent.resize(n+1, 0);
+        size.resize(n+1, 1);
+        for(int i=0;i<=n;i++) {
+            parent[i] = i;
+        }
+    }
+
+    int findUpar(int node) {
+        if(parent[node] == node) return node;
+        return parent[node] = findUpar(parent[node]);
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUpar(u);
+        int ulp_v = findUpar(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] > size[ulp_v]) {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+class Solution {
+public:
+    vector<int> processQueries(int c, vector<vector<int>>& connections, vector<vector<int>>& queries) {
+
+        DisJointSet ds(c);
+
+        for(auto connection: connections) {
+            ds.unionBySize(connection[0], connection[1]);
+        }
+
+        unordered_map<int,set<int>> mp;
+
+        for(int node=1;node<=c;node++) {
+            mp[node].insert(node);
+        }
+
+        for(auto connection: connections) {
+            int ulp_u = ds.findUpar(connection[0]);
+            int ulp_v = ds.findUpar(connection[1]);
+            mp[ulp_u].insert(connection[0]);
+            mp[ulp_v].insert(connection[1]);
+        }
+
+        vector<int> ans;
+        for(auto q: queries) {
+            int type = q[0];
+            int node = q[1];
+
+            if(type == 1) {
+                int parnode = ds.findUpar(node);
+                if(mp[parnode].find(node) != mp[parnode].end()){
+                    ans.push_back(node);
+                }
+                else {
+                    if(mp[parnode].size() > 0) {
+                        int opNode = *mp[parnode].begin();
+                        ans.push_back(opNode);
+                    } 
+                    else ans.push_back(-1);
+                }
+            }
+            else {
+                int parnode = ds.findUpar(node);
+                mp[parnode].erase(node);
+            }
+        }
+
+        return ans;
+    }
+};
