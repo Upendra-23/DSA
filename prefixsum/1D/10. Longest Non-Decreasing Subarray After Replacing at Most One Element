@@ -4,7 +4,6 @@ public:
         int n = nums.size();
 
         if(n == 1) return 1;
-
         vector<int> left(n, 1), right(n, 1);
 
         for(int i=1;i<n;i++) {
