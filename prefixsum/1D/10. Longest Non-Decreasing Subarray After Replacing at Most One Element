@@ -27,7 +27,6 @@ public:
             else 
                 ans = max(ans, 1+max(left[i-1], right[i+1]));
         }
-
         return ans;
     }
 };
