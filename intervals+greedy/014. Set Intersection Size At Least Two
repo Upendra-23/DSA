@@ -1,0 +1,33 @@
+class Solution {
+    static bool comp(vector<int> &i1, vector<int> &i2) {
+        if(i1[1] == i2[1]) return i1[0] > i2[0];
+        return i1[1] < i2[1];
+    }
+public:
+    int intersectionSizeTwo(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end(), comp);
+
+        int first = intervals[0][1]-1;
+        int second = intervals[0][1];
+        int cnt = 2;
+
+        for(int i=1;i<intervals.size();i++) {
+            int l = intervals[i][0];
+            int r = intervals[i][1];
+
+            if(first >= l) continue;
+
+            if(l > second) {
+                first = r-1;
+                second = r;
+                cnt += 2;
+            }
+            else {
+                first = second;
+                second = r;
+                cnt++;
+            } 
+        }
+        return cnt;
+    }
+};
