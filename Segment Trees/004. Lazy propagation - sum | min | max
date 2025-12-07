@@ -1,0 +1,229 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class ST {
+	vector<int> tree;
+	vector<int> lazy;
+	vector<int> arr;
+	int n;
+
+	void build(int ind, int low, int high)
+	{
+		if (low == high) {
+			tree[ind] = arr[low];
+			return;
+		}
+		int mid = low + (high - low) / 2;
+		build(2 * ind + 1, low, mid);
+		build(2 * ind + 2, mid + 1, high);
+		tree[ind] = tree[2 * ind + 1] + tree[2 * ind + 2];
+	}
+
+	void updateLazy(int ind, int low, int high)
+	{
+		// update and propagate below
+		if (lazy[ind] != 0) {
+			tree[ind] += (high - low + 1) * lazy[ind];
+			if (low != high) {
+				lazy[2 * ind + 1] += lazy[ind];
+				lazy[2 * ind + 2] += lazy[ind];
+			}
+			lazy[ind] = 0;
+		}
+	}
+
+	void update(int ind, int low, int high, int l, int r, int val)
+	{
+		// update as soon as you visit
+		updateLazy(ind, low, high);
+
+		// no overlap
+		// low high l r or l r low high
+		if (high < l or r < low) {
+			return;
+		}
+
+		// complete overlap
+		// l low high r
+		if (low >= l and high <= r) {
+			tree[ind] += (high - low + 1) * val;
+			if (low != high) {
+				lazy[2 * ind + 1] += val;
+				lazy[2 * ind + 2] += val;
+			}
+			return;
+		}
+
+		// partial overlap
+		int mid = low + (high - low) / 2;
+		update(2 * ind + 1, low, mid, l, r, val);
+		update(2 * ind + 2, mid + 1, high, l, r, val);
+		tree[ind] = tree[2 * ind + 1] + tree[2 * ind + 2];
+	}
+
+	int query(int ind, int low, int high, int l, int r)
+	{
+		// update as soon as you visit
+		updateLazy(ind, low, high);
+
+		// no overlap
+		// low high l r or l r low high
+		if (high < l or r < low) {
+			return 0;
+		}
+
+		// complete overlap
+		// l low high r
+		if (low >= l and high <= r) {
+			return tree[ind];
+		}
+
+		// partial overlap
+		int mid = low + (high - low) / 2;
+		int left = query(2 * ind + 1, low, mid, l, r);
+		int right = query(2 * ind + 2, mid + 1, high, l, r);
+		return left + right;
+	}
+
+public:
+	ST(vector<int> &input) {
+		n = input.size();
+		arr = input;
+		tree.resize(4 * n, 0);
+		lazy.resize(4 * n, 0);
+		build(0, 0, n - 1);
+	}
+
+	void updateValue(int l, int r, int val) {
+		update(0, 0, n - 1, l, r, val);
+	}
+
+	int getSum(int l, int r) {
+		return query(0, 0, n - 1, l, r);
+	}
+};
+
+class STMin {
+	vector<int> tree;
+	vector<int> lazy;
+	vector<int> arr;
+	int n;
+
+	void build(int ind, int low, int high)
+	{
+		if (low == high) {
+			tree[ind] = arr[low];
+			return;
+		}
+		int mid = low + (high - low) / 2;
+		build(2 * ind + 1, low, mid);
+		build(2 * ind + 2, mid + 1, high);
+		tree[ind] = min(tree[2 * ind + 1] , tree[2 * ind + 2]);
+	}
+
+	void updateLazy(int ind, int low, int high)
+	{
+		// update and propagate below
+		if (lazy[ind] != 0) {
+			tree[ind] += lazy[ind];
+			if (low != high) {
+				lazy[2 * ind + 1] += lazy[ind];
+				lazy[2 * ind + 2] += lazy[ind];
+			}
+			lazy[ind] = 0;
+		}
+	}
+
+	void update(int ind, int low, int high, int l, int r, int val)
+	{
+		// update as soon as you visit
+		updateLazy(ind, low, high);
+
+		// no overlap
+		// low high l r or l r low high
+		if (high < l or r < low) {
+			return;
+		}
+
+		// complete overlap
+		// l low high r
+		if (low >= l and high <= r) {
+			tree[ind] += val;
+			if (low != high) {
+				lazy[2 * ind + 1] += val;
+				lazy[2 * ind + 2] += val;
+			}
+			return;
+		}
+
+		// partial overlap
+		int mid = low + (high - low) / 2;
+		update(2 * ind + 1, low, mid, l, r, val);
+		update(2 * ind + 2, mid + 1, high, l, r, val);
+		tree[ind] = min(tree[2 * ind + 1] , tree[2 * ind + 2]);
+	}
+
+	int query(int ind, int low, int high, int l, int r)
+	{
+		// update as soon as you visit
+		updateLazy(ind, low, high);
+
+		// no overlap
+		// low high l r or l r low high
+		if (high < l or r < low) {
+			return INT_MAX;
+		}
+
+		// complete overlap
+		// l low high r
+		if (low >= l and high <= r) {
+			return tree[ind];
+		}
+
+		// partial overlap
+		int mid = low + (high - low) / 2;
+		int left = query(2 * ind + 1, low, mid, l, r);
+		int right = query(2 * ind + 2, mid + 1, high, l, r);
+		return min(left, right);
+	}
+
+public:
+	STMin(vector<int> &input) {
+		n = input.size();
+		arr = input;
+		tree.resize(4 * n);
+		lazy.resize(4 * n, 0);
+		build(0, 0, n - 1);
+	}
+
+	void updateValue(int l, int r, int val) {
+		update(0, 0, n - 1, l, r, val);
+	}
+
+	int getMin(int l, int r) {
+		return query(0, 0, n - 1, l, r);
+	}
+};
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	vector<int> input(n);
+	for (int i = 0; i < n; i++) cin >> input[i];
+
+	STMin st(input);
+	while (q--) {
+		int type;
+		cin >> type;
+		if (type == 2) {
+			int l, r;
+			cin >> l >> r;
+			cout << st.getMin(l - 1 , r - 1) << endl;
+		}
+		else {
+			int l, r, val;
+			cin >> l >> r >> val;
+			st.updateValue(l - 1 , r - 1 , val);
+		}
+	}
+}
