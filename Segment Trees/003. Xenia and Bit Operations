@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+class SEGTree {
+	vector<ll> tree;
+	vector<ll> arr;
+	int n;
+
+	void build(int ind, int low, int high, bool isXor)
+	{
+		if (low == high) {
+			tree[ind] = arr[low];
+			return;
+		}
+		int mid = low + (high - low) / 2;
+		build(2 * ind + 1, low, mid, !isXor);
+		build(2 * ind + 2, mid + 1, high, !isXor);
+
+		if (isXor) tree[ind] = tree[2 * ind + 1] ^ tree[2 * ind + 2];
+		else tree[ind] = tree[2 * ind + 1] | tree[2 * ind + 2];
+	}
+
+	void update(int ind, int low, int high, int pos, int val, bool isXor)
+	{
+		if (low == high) {
+			tree[ind] = val;
+			arr[pos] = val;
+			return;
+		}
+		int mid = low + (high - low) / 2;
+		if (pos <= mid) update(2 * ind + 1, low, mid, pos, val, !isXor);
+		else update(2 * ind + 2, mid + 1, high, pos, val, !isXor);
+
+		if (isXor) tree[ind] = tree[2 * ind + 1] ^ tree[2 * ind + 2];
+		else tree[ind] = tree[2 * ind + 1] | tree[2 * ind + 2];
+	}
+public:
+	bool isXor = false;
+	SEGTree(vector<ll> &input, int _isXor) {
+		arr = input;
+		n = arr.size();
+		isXor = _isXor;
+		tree.resize(4 * n + 1);
+		build(0, 0, n - 1, isXor);
+	}
+
+	ll getRoot() {
+		return tree[0];
+	}
+
+	void setValue(int pos, ll val) {
+		update(0, 0, n - 1, pos, val, isXor);
+	}
+};
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	int el = pow(2, n);
+	vector<ll> input(el);
+	for (int i = 0; i < el; i++) cin >> input[i];
+
+	SEGTree st(input, n % 2 == 0);
+	while (q--) {
+		int pos, val;
+		cin >> pos >> val;
+		pos--;
+		st.setValue(pos, val);
+		cout << st.getRoot() << endl;
+	}
+
+}
