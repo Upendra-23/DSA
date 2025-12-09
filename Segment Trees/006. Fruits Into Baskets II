@@ -1,0 +1,62 @@
+class ST {
+    vector<int> tree;
+    vector<int> arr;
+    int n;
+
+    void build(int ind, int low, int high) {
+        if(low == high) {
+            tree[ind] = arr[low];
+            return;
+        }
+        int mid = low+(high-low)/2;
+        build(2*ind+1, low, mid);
+        build(2*ind+2, mid+1, high);
+        tree[ind] = max(tree[2*ind+1], tree[2*ind+2]);
+    }
+
+    bool query(int ind, int low, int high, int val) {
+
+        if(tree[ind] < val) return false;
+
+        if(low == high) {
+            tree[ind] = -1;
+            return true;
+        }
+
+        int mid = low+(high-low)/2;
+        bool found = false;
+
+        if(tree[2*ind+1] >= val) found = query(2*ind+1, low, mid, val);
+        else found = query(2*ind+2, mid+1, high, val);
+
+        tree[ind] = max(tree[2*ind+1], tree[2*ind+2]);
+        return found;
+        
+    }
+public:
+    ST(vector<int> &input) {
+        n = input.size();
+        arr = input;
+        tree.resize(4 * n);
+        build(0, 0, n-1);
+    }
+
+    bool insert(int val) {
+        return query(0, 0, n-1, val);
+    }
+};
+class Solution {
+public:
+    int numOfUnplacedFruits(vector<int>& fruits, vector<int>& baskets) {
+
+        ST st(baskets);
+
+        int cnt = 0;
+        for(auto it: fruits) {
+            if(!st.insert(it))
+                cnt++;
+        }
+
+        return cnt;
+    }
+};
