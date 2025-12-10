@@ -1,0 +1,87 @@
+using ll = long long;
+
+class Node {
+public:
+    int val;
+    int count;
+
+    Node() {}
+
+    Node(int _val, int _count) {
+        val = _val;
+        count = _count;
+    }
+};
+
+class ST {
+	vector<Node> tree;
+	vector<int> arr;
+	int n;
+
+    Node merge(Node &left, Node &right) {
+        if(left.val == right.val) return Node(left.val, left.count + right.count);
+        if(left.count > right.count) return Node(left.val, left.count - right.count);
+        return Node(right.val, right.count - left.count);
+    }
+
+	void build(int ind, int low, int high)
+	{
+		if (low == high) {
+			tree[ind] = Node(arr[low], 1);
+			return;
+		}
+		int mid = low + (high - low) / 2;
+		build(2 * ind + 1, low, mid);
+		build(2 * ind + 2, mid + 1, high);
+		tree[ind] = merge(tree[2 * ind + 1], tree[2 * ind + 2]);
+	}
+
+	Node query(int ind, int low, int high, int l, int r)
+	{
+		if (high < l || r < low) return Node(0, 0);
+		if (low >= l && high <= r) return tree[ind];
+		int mid = low + (high - low) / 2;
+		Node left = query(2 * ind + 1, low, mid, l, r);
+		Node right = query(2 * ind + 2, mid + 1, high, l, r);
+		return merge(left, right);
+	}
+public:
+    ST() {}
+	void init(vector<int> &input) {
+		arr = input;
+		n = arr.size();
+		tree.resize(4 * n + 1);
+		build(0, 0, n - 1);
+	}
+	Node getMaJEL(int l, int r) {
+		return query(0, 0, n - 1, l, r);
+	}
+};
+class MajorityChecker {
+public:
+    ST st;
+    unordered_map<int,vector<int>> mp;
+    MajorityChecker(vector<int>& arr) {
+        st.init(arr);
+        for(int i=0;i<arr.size();i++) {
+            mp[arr[i]].push_back(i);
+        }
+    }
+    
+    int query(int left, int right, int threshold) {
+        Node majNode = st.getMaJEL(left, right);
+        int el = majNode.val;
+        vector<int> a = mp[el];
+
+        int lb = lower_bound(a.begin(), a.end(), left) - a.begin();
+        int ub = upper_bound(a.begin(), a.end(), right) - a.begin();
+        if(ub-lb >= threshold) return el;
+        return -1;
+    }
+};
+
+/**
+ * Your MajorityChecker object will be instantiated and called as such:
+ * MajorityChecker* obj = new MajorityChecker(arr);
+ * int param_1 = obj->query(left,right,threshold);
+ */
