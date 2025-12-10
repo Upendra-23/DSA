@@ -1,0 +1,78 @@
+using ll = long long;
+class ST {
+    vector<ll> tree;
+    vector<int> arr;
+    int n;
+
+    void build(int ind, int low, int high) {
+        if(low == high) {
+            tree[ind] = arr[low];
+            return;
+        }
+        int mid = low+(high-low)/2;
+        build(2*ind+1, low, mid);
+        build(2*ind+2, mid+1, high);
+        tree[ind] = tree[2*ind+1] + tree[2*ind+2];
+    }
+
+    void update(int ind, int low, int high, int pos, int val) {
+
+        if(low == high) {
+            tree[ind] = arr[pos] = val;
+            return;
+        } 
+
+        int mid = low+(high-low)/2;
+        if(pos <= mid) update(2*ind+1, low, mid, pos, val);
+        else update(2*ind+2, mid+1, high, pos, val);
+        tree[ind] = tree[2*ind+1] + tree[2*ind+2];
+    }
+
+    ll query(int ind, int low, int high, int l, int r) {
+
+        if(high < l || r < low) return 0;
+
+        if(low >= l && high <= r) return tree[ind];
+
+        int mid = low+(high-low)/2;
+        ll left = query(2*ind+1, low, mid, l, r);
+        ll right = query(2*ind+2, mid+1, high, l, r);
+        return left + right;
+    }
+public:
+    ST(int N) {
+        n = N;
+        arr.resize(n, 0);
+        tree.resize(4 * n);
+        build(0, 0, n-1);
+    }
+
+    void setValue(int pos, int val) {
+        update(0, 0, n-1, pos, val);
+    }
+
+    ll getQuery(int l, int r) {
+        return query(0, 0, n-1, l, r);
+    }
+};
+class Solution {
+public:
+    long long goodTriplets(vector<int>& nums1, vector<int>& nums2) {
+
+        int n = nums2.size();
+        unordered_map<int,int> mp;
+        for(int i=0;i<n;i++) mp[nums2[i]] = i;
+        ST st(n);
+
+        long long res = 0;
+        st.setValue(mp[nums1[0]], 1);
+        for(int i=1;i<n-1;i++) {
+            ll leftcommon = st.getQuery(0, mp[nums1[i]]-1);
+            int leftUncommon = i - leftcommon;
+            ll rightcommon = n-1 - mp[nums1[i]] - leftUncommon;
+            res += (leftcommon * rightcommon);
+            st.setValue(mp[nums1[i]], 1);
+        }      
+        return res;
+    }
+};
