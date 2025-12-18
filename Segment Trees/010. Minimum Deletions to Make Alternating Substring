@@ -1,0 +1,101 @@
+class Node {
+public:
+    int badpairs;
+    char first;
+    char last;
+
+    Node() {
+        this->badpairs = 0;
+        this->first = '#';
+        this->last = '#';
+    }
+};
+
+class ST {
+    vector<Node> tree;
+    string s;
+    int n;
+
+    Node merge(Node &left, Node &right) {
+        if(left.first == '#') return right;
+        if(right.first == '#') return left;
+
+        Node res = Node();
+        res.first = left.first;
+        res.last = right.last;
+        res.badpairs += left.badpairs + right.badpairs;
+        if(left.last == right.first) {
+            res.badpairs += 1;
+        }
+        return res;
+    }
+
+    void build(int ind, int low, int high) {
+        if(low == high) {
+            tree[ind].last = tree[ind].first = s[low];
+            return;
+        }
+        int mid = low + (high - low) / 2;
+        build(2*ind+1, low, mid);
+        build(2*ind+2, mid+1, high);
+        tree[ind] = merge(tree[2*ind+1], tree[2*ind+2]);
+    }
+
+    void update(int ind, int low, int high, int pos, char ch) {
+        if(low == high) {
+            tree[ind].first = tree[ind].last = s[low] = ch;
+            return;
+        }
+        int mid = low + (high - low) / 2;
+        if(pos <= mid) update(2*ind+1, low, mid, pos, ch);
+        else update(2*ind+2, mid+1, high, pos, ch);
+        tree[ind] = merge(tree[2*ind+1], tree[2*ind+2]);
+    }
+
+    Node query(int ind, int low, int high, int l, int r) {
+        if(high < l or r < low) return Node();
+        if(low >= l && high <= r) return tree[ind];
+        int mid = low + (high - low) / 2;
+        Node left = query(2*ind+1, low, mid, l, r);
+        Node right = query(2*ind+2, mid+1, high, l, r);
+        return merge(left, right);
+    }
+
+public:
+    ST(string &str) {
+        s = str;
+        n = s.size();
+        tree.resize(4*n);
+        build(0, 0, n-1);
+    }
+
+    void update(int pos) {
+        char ch = s[pos] == 'A' ? 'B' : 'A';
+        update(0, 0, n-1, pos, ch);
+    }
+
+    int query(int l, int r) {
+        Node ans = query(0, 0, n-1, l, r);
+        return ans.badpairs;
+    }
+};
+
+class Solution {
+public:
+    vector<int> minDeletions(string s, vector<vector<int>>& queries) {
+        ST st(s);
+        vector<int> ans;
+        for(auto it: queries) {
+            int type = it[0];
+            if(type == 1) {
+                int pos = it[1];
+                st.update(pos);
+            }
+            else {
+                int l = it[1], r = it[2];
+                ans.push_back(st.query(l, r));
+            }
+        }
+        return ans;
+    }
+};
