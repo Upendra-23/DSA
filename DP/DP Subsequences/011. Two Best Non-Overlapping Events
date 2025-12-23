@@ -1,0 +1,20 @@
+class Solution {
+    int dp[100001][3];
+    int fun(int ind, int k, vector<vector<int>> &events, vector<int> &startTime) {
+        if(ind == events.size() || k <= 0) return 0;
+        if(dp[ind][k] != -1) return dp[ind][k];
+        int notTake = fun(ind+1, k, events, startTime);
+        int nextInd = upper_bound(startTime.begin(), startTime.end(), events[ind][1]) - startTime.begin();
+        int take = events[ind][2] + fun(nextInd, k-1, events, startTime);
+        return dp[ind][k] = max(take, notTake);
+    }
+public:
+    int maxTwoEvents(vector<vector<int>>& events) {
+        int n = events.size();
+        sort(events.begin(), events.end());
+        vector<int> startTimes;
+        for(auto it: events) startTimes.push_back(it[0]);
+        memset(dp, -1, sizeof(dp));
+        return fun(0, 2, events, startTimes);
+    }
+};
